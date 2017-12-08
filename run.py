@@ -2,7 +2,7 @@
 
 import os
 
-from app import create_app
+from app.app import create_app
 from instance.config import app_config
 
 config_name = 'development'
