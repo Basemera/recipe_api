@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from app.app import db
+from recipe_api import db
 #from app.app import api, app, db, session
 from flask import abort, g, jsonify
 #       from flask_httpauth import HTTPBasicAuth

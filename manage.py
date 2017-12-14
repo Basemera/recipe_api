@@ -1,10 +1,10 @@
-from app.app import create_app, db
+from views import app, db
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from instance.config import app_config
 
 conf = app_config['development']
-app = create_app("development")
+#app = create_app("development")
 
 manage = Manager(app)
 migrate = Migrate(app, db)
