@@ -10,6 +10,7 @@ class Config(object):
     DEBUG = False
     CSRF_ENABLED = True
     SECRET_KEY = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     #global SQLALCHEMY_DATABASE_URI
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:phiona@localhost:5432/recipe_api'
 
