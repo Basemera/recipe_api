@@ -37,14 +37,14 @@ class AddUser(Resource):
     def post(self):  
         parser = reqparse.RequestParser()
         #parser.add_argument('userid', type = int)
-        parser.add_argument('username', type = str)
+        parser.add_argument('username', type = str, required = True)
         parser.add_argument('email', type = str)
         parser.add_argument('password', type = str)
         parser.add_argument('firstname', type = str)
         parser.add_argument('lastname', type = str)
         args = parser.parse_args()
         #userid = args['userid']
-        username = args['username']
+        username = args['username'].strip()
         print(username)
         email = args['email']
         password = args['password']

@@ -44,19 +44,23 @@ class TestUsermodelTestCase(BaseTestCase):
                 'firstname':'Second',
                 'lastname':'User'
         }
+        data1 = {'username':'',
+                'email':'bab@c.com',
+                'password':'87654321',
+                'firstname':'phiona',
+                'lastname':'bas'
+        }
         
         #print('data: {}'.format(data))
         payload = json.dumps(data)
         #print(payload)
         h = Headers()
         h.add('Content-Type', 'application/json')
-        self.assertTrue(app.config['DEBUG'] is True)
-        self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] =="postgresql://postgres:phiona@localhost:5432/test_db")
+        
 
         # response = self.client().post("/user", headers=h, data=payload)
         response = self.client.post('/auth/register/user/', data=data)
-        
+        response1 = self.client.post('/auth/register/user/', data=data1)
         # print("here here")
         # print('response')
         # print(response)
@@ -66,6 +70,8 @@ class TestUsermodelTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('bb@c.com', data['email'])
         self.assertIn('User', data['lastname'])
+        self.assertEqual(response1.status_code, 404)
+
 
     
 if __name__ == "__main__":
