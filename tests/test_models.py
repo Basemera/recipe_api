@@ -2,37 +2,39 @@
 import unittest
 import json
 from flask import jsonify, json
-from recipe_api import app, db, api
-from models import User
+from flask_testing import TestCase
+from recipe import app, api, db
+from recipe.models import User
 #from app.app import app, db
-from views import AddUser
+from recipe.auth.views import AddUser
 #from app.views import AddUser
 from werkzeug.datastructures import Headers
+from .base import BaseTestCase
 
 
-class TestUsermodelTestCase(unittest.TestCase):
+class TestUsermodelTestCase(BaseTestCase):
     """Class representing the Usermodel Test Case"""
-    def setUp(self):
-        app.config.from_object("config.TestingConfig")
-        self.client = app.test_client()
-        self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona', 'firstname':'Phiona', 'lastname':'Bas'}
-        # def create_apps(self):
-        #     """Setup app and its configs"""
+    # def setUp(self):
+    #     app.config.from_object("recipe.config.TestingConfig")
+    #     self.client = app.test_client()
+    #     self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona', 'firstname':'Phiona', 'lastname':'Bas'}
+    #     # def create_apps(self):
+    #     #     """Setup app and its configs"""
 
-        #     config_name = 'testing'
+    #     #     config_name = 'testing'
 
-        #     app = create_app(config_name)
+    #     #     app = create_app(config_name)
 
-        #     return app
-        with app.app_context():
-            db.create_all()
+    #     #     return app
+    #     with app.app_context():
+    #         db.create_all()
     
-    def tearDown(self):
-        """teardown all initialized variables."""
-        # drop all tables
-        with app.app_context():
-            db.session.remove()
-            db.drop_all()
+    # def tearDown(self):
+    #     """teardown all initialized variables."""
+    #     # drop all tables
+    #     with app.app_context():
+    #         db.session.remove()
+    #         db.drop_all()
 
     def test_user_registration(self):
         
@@ -53,7 +55,7 @@ class TestUsermodelTestCase(unittest.TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] =="postgresql://postgres:phiona@localhost:5432/test_db")
 
         # response = self.client().post("/user", headers=h, data=payload)
-        response = self.client.post('/user/', data=data)
+        response = self.client.post('/auth/register/user/', data=data)
         
         # print("here here")
         # print('response')
