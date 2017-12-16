@@ -6,7 +6,7 @@ from flask_restful import reqparse, Resource, Api, marshal_with
 #from app import app
 #from app.app import app
 #from app.models import User
-from flask import abort, g, jsonify
+from flask import abort, g, jsonify, Blueprint
 #       from flask_httpauth import HTTPBasicAuth
 from flask_httpauth import HTTPBasicAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -15,9 +15,10 @@ from passlib.apps import custom_app_context as pwd_context
 #from app.marsh import *
 #rom marshmallow import pprint
 from functools import wraps
-from recipe import app, db, api
+from recipe import app, db
 from recipe.models import User
-from . import autho
+#from . import autho
+from recipe.helpers import key_is_not_empty
 
 
 
@@ -30,6 +31,9 @@ from . import autho
 auth = HTTPBasicAuth(scheme='Token')
 secret_key = 'phiona'
 #secret_key = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
+
+autho = Blueprint('auth', __name__)
+api = Api(autho)
 
 
 class AddUser(Resource):
@@ -44,8 +48,9 @@ class AddUser(Resource):
         parser.add_argument('lastname', type = str)
         args = parser.parse_args()
         #userid = args['userid']
+        if key_is_not_empty(args):
+            return {'error': 'all fields must be filled'}, 400
         username = args['username'].strip()
-        print(username)
         email = args['email']
         password = args['password']
         firstname = args['firstname']

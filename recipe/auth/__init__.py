@@ -4,6 +4,6 @@ from flask import Blueprint
 
 """Creating Blueprints for the login and user"""
 
-autho = Blueprint('auth', __name__, url_prefix='/auth/register')
+# autho = Blueprint('auth', __name__)
 
-#from . import views
+from . import views

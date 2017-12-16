@@ -7,7 +7,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 #from flask import Flask
 from flask_restful import Api
-from . auth import autho
+#from . auth import autho
 #from views import AddUser
 #from flask_httpauth import HTTPBasicAuth
 #from instance.config import app_config
@@ -19,7 +19,7 @@ from . auth import autho
 app = Flask(__name__)
 app.config.from_object("recipe.config.DevelopmentConfig")
 db = SQLAlchemy(app)
-api = Api(autho)
+# api = Api(autho)
 #app.register_blueprint(autho)
 
 
