@@ -3,40 +3,37 @@ import unittest
 import json
 from flask import jsonify, json
 from flask_testing import TestCase
-from recipe import app, api, db
+from recipe import app, db
 from recipe.models import User
 #from app.app import app, db
-from recipe.auth.views import AddUser
+from recipe.auth.views import AddUser, api
 #from app.views import AddUser
 from werkzeug.datastructures import Headers
-from .base import BaseTestCase
+from tests.base import BaseTestCase
 
 
 class TestUsermodelTestCase(BaseTestCase):
-    """Class representing the Usermodel Test Case"""
-    # def setUp(self):
-    #     app.config.from_object("recipe.config.TestingConfig")
-    #     self.client = app.test_client()
-    #     self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona', 'firstname':'Phiona', 'lastname':'Bas'}
-    #     # def create_apps(self):
-    #     #     """Setup app and its configs"""
+#     """Class representing the Usermodel Test Case"""
+#     def test_username_and_email_already_exist(self):
+#         data = {'username':'seconduser',
+#                 'email':'bb@c.com',
+#                 'password':'87654321',
+#                 'firstname':'Second',
+#                 'lastname':'User'
+#         }
+#         data1 = {'username':'seconduser',
+#                 'email':'nht@c.com',
+#                 'password':'87654321',
+#                 'firstname':'stela',
+#                 'lastname':'kiwa'
+#         }
+#         with self.client:
+#               self.client.post('/user/', data=data)
+#               response = self.client.post('/user/', data=data1)
+#               self.assertEqual(response.status_code, 400)
 
-    #     #     config_name = 'testing'
 
-    #     #     app = create_app(config_name)
-
-    #     #     return app
-    #     with app.app_context():
-    #         db.create_all()
-    
-    # def tearDown(self):
-    #     """teardown all initialized variables."""
-    #     # drop all tables
-    #     with app.app_context():
-    #         db.session.remove()
-    #         db.drop_all()
-
-    def test_user_registration(self):
+    def test_user_registration_with_validation(self):
         
         data = {'username':'seconduser',
                 'email':'bb@c.com',
@@ -50,6 +47,13 @@ class TestUsermodelTestCase(BaseTestCase):
                 'firstname':'phiona',
                 'lastname':'bas'
         }
+        data2 = {'username':'',
+                'email':'',
+                'password':'87654321',
+                'firstname':'    ',
+                'lastname':'bas'
+        }
+
         
         #print('data: {}'.format(data))
         payload = json.dumps(data)
@@ -59,8 +63,10 @@ class TestUsermodelTestCase(BaseTestCase):
         
 
         # response = self.client().post("/user", headers=h, data=payload)
-        response = self.client.post('/auth/register/user/', data=data)
-        response1 = self.client.post('/auth/register/user/', data=data1)
+        response = self.client.post('/user', data=data)
+        response1 = self.client.post('/user', data=data1)
+        response2 = self.client.post('/user', data=data2)
+
         # print("here here")
         # print('response')
         # print(response)
@@ -70,7 +76,9 @@ class TestUsermodelTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('bb@c.com', data['email'])
         self.assertIn('User', data['lastname'])
-        self.assertEqual(response1.status_code, 404)
+        self.assertEqual(response1.status_code, 422)
+        self.assertEqual(response2.status_code, 422)
+
 
 
     

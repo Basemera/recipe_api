@@ -3,10 +3,10 @@ import unittest
 import json
 from flask import jsonify, json
 from flask_testing import TestCase
-from recipe import app, api, db
+from recipe import app, db
 from recipe.models import User
 #from app.app import app, db
-from recipe.auth.views import AddUser
+from recipe.auth.views import AddUser, api
 #from app.views import AddUser
 from werkzeug.datastructures import Headers
 
