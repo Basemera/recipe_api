@@ -1,4 +1,5 @@
-from recipe.auth.views import api
+import unittest
+from recipe.auth.views import api, api_login
 from recipe import app, db
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -14,9 +15,19 @@ manage.add_command('db', MigrateCommand)
 
 @manage.command
 def create_db(default_data = True, sample_data = False):
+    """create the database"""
     db.drop_all()
     db.create_all()
     #db.session.commit()
+
+@manage.command
+def test():
+    """Runs the tests without code coverage."""
+    tests = unittest.TestLoader().discover('/tests', pattern='test*.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
 
 @manage.command
 def drop_database():

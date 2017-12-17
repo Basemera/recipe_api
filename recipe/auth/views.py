@@ -16,6 +16,7 @@ from passlib.apps import custom_app_context as pwd_context
 #rom marshmallow import pprint
 from functools import wraps
 from recipe import app, db
+from . import autho, autho_login
 from recipe.models import User
 #from . import autho
 from recipe.helpers import key_is_not_empty
@@ -32,10 +33,31 @@ auth = HTTPBasicAuth(scheme='Token')
 secret_key = 'phiona'
 #secret_key = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
 
-autho = Blueprint('auth', __name__)
+#autho = Blueprint('auth', __name__)
 api = Api(autho)
+api_login = Api(autho_login)
 
 
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return jsonify({'message': 'token is missing'})
+        
+        s = Serializer(secret_key)
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return jsonify({'message': 'token has expired'}) # valid token, but expired
+        except BadSignature:
+            return jsonify({'message': 'Invalid token'}) # invalid token
+        users = data['userid']
+        user = User.query.filter_by(userid = data['userid']).first()
+        return f(*args, **kwargs)
 class AddUser(Resource):
     #@app.route('/user', methods= ['POST'])
     def post(self):  
@@ -49,8 +71,8 @@ class AddUser(Resource):
         args = parser.parse_args()
         #userid = args['userid']
         if key_is_not_empty(args):
-            return {'error': 'all fields must be filled'}, 400
-        username = args['username'].strip()
+            return {'error': 'all fields must be filled'}, 422
+        username = args['username']
         email = args['email']
         password = args['password']
         firstname = args['firstname']
@@ -58,17 +80,71 @@ class AddUser(Resource):
         person = User.query.filter_by(username = username, email = email).first()
         if person is None:
             new_user = User(username, email, password, firstname, lastname)
-            #new_user.hash_password(password)
+            new_user.hash_password(password)
             new_user.save_user()
             return {'userid': new_user.userid,'Username': new_user.username,  "email":new_user.email, 'lastname': new_user.lastname}, 201
             #return ({"message": "Success"})
         else:
-            return {"message": "User already exists"}
+            return {"message": "User already exists"}, 400
+
+class EditUser(Resource):
+    @login_required
+    def put(self, userid):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type = str)
+        args = parser.parse_args()
+        username = args['username']
+        user = User.query.filter_by(userid = userid).first()
+        if user is None:
+            return ({'message':'user doesnot exist'})
+        user.username = username
+        db.session.commit()
+        return ({'username':user.username})
+
+    @login_required
+    def delete(self, userid):
+        user = User.query.filter_by(userid = userid).first()
+        if user is None:
+            return ({'message':'user doesnot exist'})
+        username = user.username
+        db.session.delete(user)
+        db.session.commit()
+        return ({'User deleted':username})
+
+class Login(Resource):
+    #@login_required
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type = str)
+        parser.add_argument('password', type = str)
+        args = parser.parse_args()
+        username = args['username']
+        password = args['password']
+        
+        # auth = request.authorization
+        # if not auth:
+        #     return make_response("login info not provided")
+        
+        users = User.query.filter_by(username = username).first()
+        if not users:
+            response = {'message':'user doesnot exist'}
+            return make_response(jsonify(response), 401)
+            #return make_response("user doesnot exist")
+        user = User.verify_password(username, password)
+        if user:
+            token = g.user.generate_auth_token()
+            user =g.user
+            response = {'message':'You have successfully logged in', 'token': token.decode('ascii') }
+            return make_response(jsonify(response), 200)
+        responses = {'message':'invalid credentials'}
+        return make_response(jsonify(responses), 401)
+        #return make_response("invalid credentials")
 
 
-
-api.add_resource(AddUser, '/user/') # , endpoint = "add_user"
+api.add_resource(AddUser, '/user') # , endpoint = "add_user"
+api_login.add_resource(Login, '/login')
 app.register_blueprint(autho)
+app.register_blueprint(autho_login)
 if __name__ == "__main__":
     app.run()
 

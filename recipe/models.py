@@ -52,7 +52,7 @@ class User(db.Model):
     def hash_password(self, password):
         self.password = password
         self.password = pwd_context.encrypt(password)
-
+    
     def verify_passwords(self, password):
         return pwd_context.verify(password, self.password)
 
@@ -60,7 +60,7 @@ class User(db.Model):
     def generate_auth_token(self, expiration = 6000):
         s = Serializer(secret_key, expires_in = expiration)
         return s.dumps({ 'userid': self.userid })
-
+    
     @auth.verify_password
     def verify_password(username_or_token, password):
     # first try to authenticate by token
@@ -72,7 +72,8 @@ class User(db.Model):
             
         else:
         # try to authenticate with username/password
-            user = session.query(User).filter_by(username = username_or_token).first()
+            #user = session.query(User).filter_by(username = username_or_token).first()
+            user = User.query.filter_by(username = username_or_token).first()
             if not user or not user.verify_passwords(password):
                 return False
             g.user = user

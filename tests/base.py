@@ -3,7 +3,8 @@ import unittest
 import json
 from flask import jsonify, json
 from flask_testing import TestCase
-from recipe import app, api, db
+from recipe import app, db
+from recipe.auth.views import api
 
 
 class BaseTestCase(unittest.TestCase):
