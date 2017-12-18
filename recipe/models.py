@@ -25,7 +25,8 @@ class User(db.Model):
     datemodified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
-    #recipecategory = db.relationship('RecipeCategory', backref = 'owner', lazy = 'dynamic')
+    recipe_category = db.relationship('RecipeCategory', backref = 'owner', lazy = 'dynamic')
+    
 
     def __init__(self, username, email, password, firstname, lastname):
         #self.userid = userid
@@ -93,3 +94,36 @@ class User(db.Model):
         user = data['userid']
         # user = User.query.get(data['userid'])
         return user
+
+
+class RecipeCategory(db.Model):
+    __tablename__ = 'recipe_category'
+    category_id = db.Column(db.Integer,  primary_key = True, autoincrement = True)
+    category_name = db.Column(db.String(200), index = True)
+    datecreated = db.Column(db.DateTime, default=db.func.current_timestamp())
+    datemodified = db.Column(
+        db.DateTime, default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp())
+    user = db.Column(db.Integer, db.ForeignKey(User.userid))
+    #recipes = db.relationship('Recipes', primaryjoin = "and_(RecipeCategory.category_id == Recipes.category_id)", backref = 'recipe_category', lazy = 'joined')
+
+        #intialise the class
+    def __init__(self, category_name, user):
+        self.user = user
+        self.category_name = category_name
+    
+    def save_category(self):
+        db.session.add(self)
+        db.session.commit()
+    #method to delete a user from the database
+    def delete_category(self):
+        db.session.delete(self)
+        db.session.commit()  
+
+    @staticmethod
+    def get_all_categories():
+        return RecipeCategory.query.all()
+
+    def __repr__(self):
+        return "<Category %r>" %(self.category_name)
+
