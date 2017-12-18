@@ -33,52 +33,53 @@ class TestUsermodelTestCase(BaseTestCase):
 #               self.assertEqual(response.status_code, 400)
 
 
-    def test_user_registration_with_validation(self):
-        
-        data = {'username':'seconduser',
-                'email':'bb@c.com',
-                'password':'87654321',
-                'firstname':'Second',
-                'lastname':'User'
-        }
-        data1 = {'username':'',
-                'email':'bab@c.com',
-                'password':'87654321',
-                'firstname':'phiona',
-                'lastname':'bas'
-        }
-        data2 = {'username':'',
-                'email':'',
-                'password':'87654321',
-                'firstname':'    ',
-                'lastname':'bas'
-        }
+        def test_user_registration_with_validation(self):
+                
+                data = {'username':'seconduser',
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'firstname':'Second',
+                        'lastname':'User'
+                }
+                data1 = {'username':'',
+                        'email':'bab@c.com',
+                        'password':'87654321',
+                        'firstname':'phiona',
+                        'lastname':'bas'
+                }
+                data2 = {'username':'',
+                        'email':'',
+                        'password':'87654321',
+                        'firstname':'    ',
+                        'lastname':'bas'
+                }
 
-        
-        #print('data: {}'.format(data))
-        payload = json.dumps(data)
-        #print(payload)
-        h = Headers()
-        h.add('Content-Type', 'application/json')
-        
+                
+                #print('data: {}'.format(data))
+                payload = json.dumps(data)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')
+                
 
-        # response = self.client().post("/user", headers=h, data=payload)
-        response = self.client.post('/user', data=data)
-        response1 = self.client.post('/user', data=data1)
-        response2 = self.client.post('/user', data=data2)
+                # response = self.client().post("/user", headers=h, data=payload)
+                response = self.client.post('/user', data=data)
+                response1 = self.client.post('/user', data=data1)
+                response2 = self.client.post('/user', data=data2)
 
-        # print("here here")
-        # print('response')
-        # print(response)
-        # print('response')
-        # # res = json.loads(response.data)
-        # # print(res)
-        self.assertEqual(response.status_code, 201)
-        self.assertIn('bb@c.com', data['email'])
-        self.assertIn('User', data['lastname'])
-        self.assertEqual(response1.status_code, 422)
-        self.assertEqual(response2.status_code, 422)
+                # print("here here")
+                # print('response')
+                # print(response)
+                # print('response')
+                # # res = json.loads(response.data)
+                # # print(res)
+                self.assertEqual(response.status_code, 201)
+                self.assertIn('bb@c.com', data['email'])
+                self.assertIn('User', data['lastname'])
+                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(response2.status_code, 422)
 
+        #        
 
 
     

@@ -16,10 +16,10 @@ from passlib.apps import custom_app_context as pwd_context
 #rom marshmallow import pprint
 from functools import wraps
 from recipe import app, db
-from . import autho, autho_login
+from . import autho
 from recipe.models import User
 #from . import autho
-from recipe.helpers import key_is_not_empty
+from recipe.helpers import key_is_not_empty, login_required
 
 
 
@@ -35,29 +35,29 @@ secret_key = 'phiona'
 
 #autho = Blueprint('auth', __name__)
 api = Api(autho)
-api_login = Api(autho_login)
+#api_login = Api(autho_login)
 
 
-def login_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+# def login_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         token = None
+#         if 'x-access-token' in request.headers:
+#             token = request.headers['x-access-token']
 
-        if not token:
-            return jsonify({'message': 'token is missing'})
+#         if not token:
+#             return jsonify({'message': 'token is missing'})
         
-        s = Serializer(secret_key)
-        try:
-            data = s.loads(token)
-        except SignatureExpired:
-            return jsonify({'message': 'token has expired'}) # valid token, but expired
-        except BadSignature:
-            return jsonify({'message': 'Invalid token'}) # invalid token
-        users = data['userid']
-        user = User.query.filter_by(userid = data['userid']).first()
-        return f(*args, **kwargs)
+#         s = Serializer(secret_key)
+#         try:
+#             data = s.loads(token)
+#         except SignatureExpired:
+#             return jsonify({'message': 'token has expired'}) # valid token, but expired
+#         except BadSignature:
+#             return jsonify({'message': 'Invalid token'}) # invalid token
+#         users = data['userid']
+#         user = User.query.filter_by(userid = data['userid']).first()
+#         return f(*args, **kwargs)
 class AddUser(Resource):
     #@app.route('/user', methods= ['POST'])
     def post(self):  
@@ -142,9 +142,10 @@ class Login(Resource):
 
 
 api.add_resource(AddUser, '/user') # , endpoint = "add_user"
-api_login.add_resource(Login, '/login')
+api.add_resource(Login, '/login')
+#api_login.add_resource(Login, '/login')
 app.register_blueprint(autho)
-app.register_blueprint(autho_login)
+#app.register_blueprint(autho_login)
 if __name__ == "__main__":
     app.run()
 

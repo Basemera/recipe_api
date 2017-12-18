@@ -7,6 +7,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 #from flask import Flask
 from flask_restful import Api
+# from recipe.auth.views import autho, autho_login
+# from recipe.auth.views import AddUser, Login
+# from recipe.categories.views import Addcategory
 #from . auth import autho
 #from views import AddUser
 #from flask_httpauth import HTTPBasicAuth
@@ -15,10 +18,12 @@ from flask_restful import Api
 
 #from models import db
 
-
+#def create_app(config_name):
+    
 app = Flask(__name__)
 app.config.from_object("recipe.config.DevelopmentConfig")
 db = SQLAlchemy(app)
+
 # api = Api(autho)
 #app.register_blueprint(autho)
 
