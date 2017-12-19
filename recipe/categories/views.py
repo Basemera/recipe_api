@@ -1,3 +1,5 @@
+import requests
+import json
 from flask import Flask, request, jsonify, g, json, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import reqparse, Resource, Api, marshal_with, fields
@@ -95,7 +97,20 @@ class deletecategory(Resource):
 #api_category.add_resource(Addcategory, '/category')
 #
 #from categories import category
-
+class search(Resource):
+    @login_required
+    def get():
+        url = 'http://127.0.0.1:5000/search?q=q'
+        headers = {'Content-Type': 'application/json'}      
+        parser = reqparse.RequestParser()
+        parser.add_argument('q', type = str)
+        args = parser.parse_args()
+        q = args['q']
+        filters = [dict(name='category_name', op='like', val='%q%')]
+        params = dict(q=json.dumps(dict(filters=filters)))
+        response = requests.get(url, params=params, headers=headers)
+        assert response.status_code == 200
+        print(response.json())
 api_category.add_resource(Addcategory, '/category')
 #api_category.add_resource(Addcategory, '/category')
 api_category.add_resource(editcategory, '/category/<category_id>')
