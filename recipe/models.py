@@ -26,6 +26,7 @@ class User(db.Model):
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
     recipe_category = db.relationship('RecipeCategory', backref = 'owner', lazy = 'dynamic')
+    recipes = db.relationship('Recipes', backref = 'recipes', lazy ='dynamic')
     
 
     def __init__(self, username, email, password, firstname, lastname):
@@ -105,6 +106,7 @@ class RecipeCategory(db.Model):
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
     user = db.Column(db.Integer, db.ForeignKey(User.userid))
+    recipes = db.relationship('Recipes', backref = 'owner', lazy ='dynamic')
     #recipes = db.relationship('Recipes', primaryjoin = "and_(RecipeCategory.category_id == Recipes.category_id)", backref = 'recipe_category', lazy = 'joined')
 
         #intialise the class
@@ -126,4 +128,39 @@ class RecipeCategory(db.Model):
 
     def __repr__(self):
         return "<Category %r>" %(self.category_name)
+
+class Recipes(db.Model):
+    __tablename__ = 'recipes'
+    recipe_id = db.Column(db.Integer,  primary_key = True, autoincrement = True)
+    recipe_name = db.Column('name', db.String(250), nullable = False, index = True)
+    description = db.Column('description', db.String(250), nullable = False, index = True)
+    datecreated = db.Column(db.DateTime, default=db.func.current_timestamp())
+    datemodified = db.Column(
+        db.DateTime, default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp())
+    user = db.Column('userid', db.Integer, db.ForeignKey(User.userid))
+    category = db.Column('category_id', db.Integer, db.ForeignKey(RecipeCategory.category_id))
+
+    def __init__(self, recipe_name, description, user, category):
+        self.user = user
+        self.recipe_name = recipe_name
+        self.category = category
+        self.description = description
+
+    def __repr__(self):
+        return "<Recipe %r>" %(self.name)
+
+
+    def save_recipe(self):
+        db.session.add(self)
+        db.session.commit()
+    #method to delete a user from the database
+    def delete_recipe(self):
+        db.session.delete(self)
+        db.session.commit()  
+
+    @staticmethod
+    def get_all_recipes():
+        return Recipes.query.all()
+
 

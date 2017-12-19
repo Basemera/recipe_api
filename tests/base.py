@@ -16,6 +16,8 @@ class BaseTestCase(unittest.TestCase):
         self.client = app.test_client()
         self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona', 'firstname':'Phiona', 'lastname':'Bas'}
         self.category = {'category_name':"fish"}
+        self.recipe = {'recipe_name':"stew", 'description':"prepared with water"}
+        self.data2 ={'username':"Bas", "password":"phiona"}
         # def create_apps(self):
         #     """Setup app and its configs"""
 

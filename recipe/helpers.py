@@ -18,6 +18,13 @@ def keys_is_not_empty(args):
     if key_is_space(args[key]) == '':
         return True
 
+def keyss_is_not_empty(args):
+    keyss = ('recipe_name', 'description')
+    for key in keyss:
+    
+        if key_is_space(args[key]) == '':
+            return True
+
 def key_is_space(string):
     return string.strip()
 
