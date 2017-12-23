@@ -1,7 +1,7 @@
 {
-    "python.pythonPath": "${workspaceRoot}\\venv\\Scripts\\python.exe",
     "python.unitTest.pyTestArgs": [
-        "venv"
+        "tests"
     ],
-    "python.unitTest.pyTestEnabled": true
+    "python.unitTest.pyTestEnabled": true,
+    "python.pythonPath": "${workspaceFolder}/venv/bin/python"
 }
