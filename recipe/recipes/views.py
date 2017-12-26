@@ -48,12 +48,15 @@ class getrecipes(Resource):
     @login_required
     @marshal_with(resource_fields)
     def get(self):
-        #get recipe details
-        response = Recipes.get_all_recipes()
-        if response is None:
-            return jsonify({'message': 'no recipes to display!'}), 404
-        #category = RecipeCategory.query.filter_by(category_name = category_name)
-        return response
+        auth = request.headers.get('x-access-token')
+        userid = User.verify_auth_token(auth)
+        
+        recipe = Recipes.query.filter_by(user=userid).first()
+        if recipe is None:
+            return jsonify({'message':'no recipes to display'})
+        #categories = RecipeCategory.get_all_categories()
+        else:
+            return recipe
         
 
 class editrecipe(Resource):
@@ -69,7 +72,7 @@ class editrecipe(Resource):
 
         recipe = Recipes.query.filter_by(recipe_id = recipe_id).first()
         if recipe is None:
-            return ({'message':'recipe doesnot exist'}, 404)
+            return ({'message':'recipe doesnot exist'}), 404
         recipe.recipe_name = recipe_name
         recipe.description = description
         db.session.commit()
@@ -110,7 +113,7 @@ class editrecipe(Resource):
         db.session.delete(recipe)
         db.session.commit()
         recipe_delete = recipe.recipe_name
-        return ({'message': 'recipe successfully deleted', 'recipe name':recipe_delete})
+        return ({'message': 'recipe successfully deleted', 'recipe name':recipe_delete}), 200
 
 # class getrecipes(Resource):
 #     @login_required
@@ -127,8 +130,43 @@ class editrecipe(Resource):
 #             #return jsonify({"recipes":recipe})
 #         return jsonify({"recipes":"doesnot exist"})
 
-api_recipe.add_resource(Addrecipe, '/recipes/<category>')
+class search(Resource):
+    @login_required
+    def get(self):
+        auth = request.headers.get('x-access-token')
+        userid = User.verify_auth_token(auth)
+        q = request.args.get('q', '')
+        per_page = request.args.get('per_page')
+        page = request.args.get('page')
+        
+        if not q:
+            response= {"message": "Search item not provided"}
+            return ({"message":"search item not provided"})
+            #return make_response(response), 200
+
+        # if type(per_page)!= int and type(page)!=int:
+        #     return ({"error":"you must specify an interger"})
+        
+        results = []
+        recipe_search_query = Recipes.query.filter(Recipes.recipe_name.ilike('%' + q + '%')).filter_by(user=userid).paginate(per_page=10, page=1, error_out=False)
+        if not recipe_search_query:
+            response = " doesnot exist"
+            return ({"message":"search item not found"}), 404
+            #return make_response(jsonify(response))
+        for recipe in recipe_search_query.items:
+            recipe_obj = {
+                "name": recipe.recipe_name,
+                "page_number": recipe_search_query.page,
+                "items_returned": recipe_search_query.total
+            }
+            results.append(recipe_obj)
+            return make_response(jsonify(results))
+
+
+api_recipe.add_resource(Addrecipe, '/<category>/recipes')
 api_recipe.add_resource(getrecipes, '/recipes')
 api_recipe.add_resource(editrecipe, '/recipes/<recipe_id>')
+api_recipe.add_resource(search, '/recipes/search')
+
 app.register_blueprint(recipe)
 

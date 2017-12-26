@@ -1,3 +1,5 @@
+import sys
+import json
 from flask import Flask, request, jsonify, g, json, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import reqparse, Resource, Api, marshal_with, fields
@@ -48,19 +50,71 @@ class Addcategory(Resource):
             response = ({'message': "Category already exists"})
             return (response, 401)
 
-    
+   
     @login_required
     @marshal_with(resource_fields)
     def get(self):
-        #get category details
-        response = RecipeCategory.get_all_categories()
-        #response = RecipeCategory.query.filter_by(category_name = category_name).first()
-        if response is None:
-            return jsonify({'message': 'no categories to display'})
-        #results = json.loads(response.data)
-        #category = RecipeCategory.query.filter_by(category_name = category_name)
-        return response
-        #return jsonify({'category name': results['category_name'], 'category_id':results['category_id']})
+        auth = request.headers.get('x-access-token')
+        userid = User.verify_auth_token(auth)
+        
+        cat = RecipeCategory.query.filter_by(user=userid).first()
+        if cat is None:
+            return jsonify({'message':'no categories to display'})
+        #categories = RecipeCategory.get_all_categories()
+        else:
+            return cat
+        # else:
+        #     return jsonify({'message':'no categories to display'})
+
+        #result = categories.filter_by(user=userid)
+        # if cat is None:
+        #     return jsonify({'message':'no categories to display'})
+        
+        # return cat
+    #     auth = request.headers.get('x-access-token')
+    #    #user_id = user.id
+    #     userid = User.verify_auth_token(auth)
+    #     q = request.args.get('q', '')
+    #     per_page = request.args.get('per_page', '')
+    #     page = request.args.get('page', '')
+
+    #     if not q:
+    #         response= ({"message": "Search item not provided"})
+    #         return make_response(jsonify(response)), 200
+    #     results = []
+    #     recipe_search_query = RecipeCategory.query.filter(RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(user=userid).paginate(per_page=10, page=1, error_out=False)
+    #     if not recipe_search_query:
+    #         response = "Category doesnot exist"
+    #         return make_response(jsonify(response))
+    #     for category in recipe_search_query.items:
+    #         cat_obj = {
+    #             "name": category.category_name,
+    #             "page_number": recipe_search_query.page,
+    #             "items_returned": recipe_search_query.total
+    #         }
+    #         results.append(cat_obj)
+    #     return make_response(jsonify(results))
+        # if not recipe_search_query:
+        #     response= {"message": "Search item not found"}
+        #     return make_response(jsonify(response)), 200
+        
+        # else: 
+        #     results = results.append(recipe_search_query)
+        #     return results
+        
+            # search_categories=RecipeCategory.query.filter(RecipeCategory.category_name.ilike('%' + q + '%'))
+        
+
+        # if q:
+        #     for item in result:
+        #         if q in result.category_name:
+        #           results.append(item)
+        #           return results
+        
+            #return jsonify({'error':'no categories exist'})
+        #return jsonify({'error':'no categories exist'})
+
+
         
 
 class editcategory(Resource):
@@ -95,9 +149,77 @@ class deletecategory(Resource):
 #api_category.add_resource(Addcategory, '/category')
 #
 #from categories import category
+class search(Resource):
+    @login_required
+    def get(self):
+        auth = request.headers.get('x-access-token')
+        userid = User.verify_auth_token(auth)
+        q = request.args.get('q', '')
+        per_page = request.args.get('per_page')
+        page = request.args.get('page')
+        
+        if not q:
+            response= {"message": "Search item not provided"}
+            return ({"message":"search item not provided"})
+            #return make_response(response), 200
+
+        # if type(per_page)!= int and type(page)!=int:
+        #     return ({"error":"you must specify an interger"})
+        
+        results = []
+        recipe_search_query = RecipeCategory.query.filter(RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(user=userid).paginate(per_page=10, page=1, error_out=False)
+        if not recipe_search_query:
+            response = "Category doesnot exist"
+            return ({"message":"search item not found"}), 404
+            #return make_response(jsonify(response))
+        for category in recipe_search_query.items:
+            cat_obj = {
+                "name": category.category_name,
+                "page_number": recipe_search_query.page,
+                "items_returned": recipe_search_query.total
+            }
+            results.append(cat_obj)
+            return make_response(jsonify(results))
+        # if not recipe_search_query:
+        #     response= {"message": "Search item not found"}
+        #     return make_response(jsonify(response)), 200
+        
+        # else: 
+        #     results = results.append(recipe_search_query)
+        #     return results
+        
+        # auth = request.headers.get('x-access-token')
+        # userid = User.verify_auth_token(auth)
+        # q = request.args.get('q', "")
+        # per_page = int(request.args.get('per_page'))
+        # page = int(request.args.get('page'))
+        # results = []
+        # if q is not None:
+        # #     response= ({"message": "Search item not provided"})
+        # #     return make_response(jsonify(response)), 200
+            
+        #     #recipe_search_query = RecipeCategory.query.filter(RecipeCategory.category_name.like('%' + q.strip() + '%')).filter_by(user=userid).paginate(per_page=per_page, page=page, error_out=False).recipes
+        #     recipe_search_query = RecipeCategory.query.filter(RecipeCategory.category_name.like('%' + q.strip() + '%')).filter_by(user=userid).paginate(per_page, page, False)
+
+        #     return recipe_search_query
+        # # else:
+        # #     recipe_search_query = RecipeCategory.query.filter(RecipeCategory.category_name.like('%' + q.strip() + '%')).filter_by(user=userid).paginate(per_page=per_page, page=page, error_out=False).recipes
+
+        # if not recipe_search_query:
+        #      response = "Category doesnot exist"
+        #      return make_response(jsonify(response))
+        # for category in recipe_search_query.items:
+        #     cat_obj = {
+        #         "name": category.category_name,
+        #         "page_number": recipe_search_query.page,
+        #         "items_returned": recipe_search_query.total
+        #     }
+        #     results.append(cat_obj)
+        # print(results)
+        # return make_response(jsonify({results})), 201
 
 api_category.add_resource(Addcategory, '/category')
-#api_category.add_resource(Addcategory, '/category')
+api_category.add_resource(search, '/category/search')
 api_category.add_resource(editcategory, '/category/<category_id>')
 api_category.add_resource(deletecategory, '/category/<category_id>')
 app.register_blueprint(category)

@@ -21,7 +21,7 @@ class TestCategoriesTestCase(BaseTestCase):
         data2 ={'username':"Bas", "password":"phiona"}
         #self.client = app.test_client()
         with self.client:
-            response = self.client.post('/user', data = self.user)
+            response = self.client.post('/user', data=self.user)
             #self.assertEqual(response.status_code, 201)
             #response = self.client.post('/login', data = data1)
             # h = Headers()
@@ -45,7 +45,7 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(result['message'], 'Category created')
 
     def test_creating_duplicate_category(self):
-        data2 ={'username':"Bas", "password":"phiona"}
+        data2 = {'username':"Bas", "password":"phiona"}
     
         #self.client = app.test_client()
         with self.client:

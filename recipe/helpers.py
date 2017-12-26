@@ -47,6 +47,7 @@ def login_required(f):
             return jsonify({'message': 'Invalid token'}) # invalid token
         users = data['userid']
         user = User.query.filter_by(userid = data['userid']).first()
+        print(user)
         return f(*args, **kwargs)
     return decorated
 

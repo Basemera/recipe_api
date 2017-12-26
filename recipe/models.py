@@ -14,7 +14,7 @@ secret_key = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
 
 #create the User model
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     userid = db.Column(db.Integer,  primary_key = True, autoincrement = True)
     username = db.Column(db.String(100), unique = True, nullable= False, index = True)
     email = db.Column(db.String(100), unique = True, index = True)
@@ -99,14 +99,14 @@ class User(db.Model):
 
 class RecipeCategory(db.Model):
     __tablename__ = 'recipe_category'
-    category_id = db.Column(db.Integer,  primary_key = True, autoincrement = True)
-    category_name = db.Column(db.String(200), index = True)
+    category_id = db.Column(db.Integer,  primary_key=True, autoincrement=True)
+    category_name = db.Column(db.String(200), index=True)
     datecreated = db.Column(db.DateTime, default=db.func.current_timestamp())
     datemodified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
     user = db.Column(db.Integer, db.ForeignKey(User.userid))
-    recipes = db.relationship('Recipes', backref = 'owner', lazy ='dynamic')
+    recipes = db.relationship('Recipes', backref='owner', lazy='dynamic')
     #recipes = db.relationship('Recipes', primaryjoin = "and_(RecipeCategory.category_id == Recipes.category_id)", backref = 'recipe_category', lazy = 'joined')
 
         #intialise the class
@@ -120,7 +120,12 @@ class RecipeCategory(db.Model):
     #method to delete a user from the database
     def delete_category(self):
         db.session.delete(self)
-        db.session.commit()  
+        db.session.commit()
+
+    def get_paginate(q, page):
+        """ Get all categories using pagination """
+        CATEGORIES = RecipeCategory.query.paginate(page, 4, False)
+        return CATEGORIES
 
     @staticmethod
     def get_all_categories():

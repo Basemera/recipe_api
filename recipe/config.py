@@ -12,7 +12,7 @@ class Config(object):
     SECRET_KEY = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     #global SQLALCHEMY_DATABASE_URI
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:phiona@localhost:5432/recipe_api'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres@localhost:5432/recipe_api'
 
     @staticmethod
     def init_app(app):
@@ -26,7 +26,7 @@ class TestingConfig(Config):
     """Configurations for Testing, with a separate test database."""
     TESTING = True
     # global SQLALCHEMY_DATABASE_URI
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:phiona@localhost:5432/test_db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres@localhost:5432/test_db'
     DEBUG = True
 
 class StagingConfig(Config):
