@@ -22,7 +22,7 @@ class TestDevelopmentConfig(TestCase):
         #self.assertFalse(current_app is None)
         self.assertTrue(
             app.config['SQLALCHEMY_DATABASE_URI'] ==
-            'postgresql://postgres:phiona@localhost:5432/recipe_api'
+            'postgresql://postgres@localhost:5432/recipe_api'
         )
 
 
@@ -38,7 +38,7 @@ class TestTestingConfig(TestCase):
         #self.assertFalse(app.config['PRESERVE_CONTEXT_ON_EXCEPTION'])
         self.assertTrue(
             app.config['SQLALCHEMY_DATABASE_URI'] ==
-            'postgresql://postgres:phiona@localhost:5432/test_db'
+            'postgresql://postgres@localhost:5432/test_db'
         )
 
 
