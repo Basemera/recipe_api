@@ -242,3 +242,49 @@ class TestRecipesTestCase(BaseTestCase):
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 404)
             self.assertEqual(result['message'], 'recipe doesnot exist')
+
+    def test_validate_recipe_name(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        data3 = {'recipe_name':1234, 'description':'boiled'}
+
+        #self.client = app.test_client()
+        with self.client:
+            response = self.client.post('/user', data = self.user)
+            #self.assertEqual(response.status_code, 201)
+            #response = self.client.post('/login', data = data1)
+            # h = Headers()
+            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
+            responses = self.client.post('/login', data = data2)
+            #result = jsonify(responses)
+            result = json.loads(responses.data.decode())
+            auth =result['token']
+            h = Headers()
+            h.add('x-access-token', auth)
+            category = self.client.post('/category', headers = h, data = self.category)
+            recipe = self.client.post('/1/recipes', headers = h, data = data3)
+            results =json.loads(recipe.data)
+            self.assertEqual(recipe.status_code, 400)
+            self.assertEqual(results['message'],'invalid input use format peas')
+
+    # def test_validate_description(self):
+    #     data2 ={'username':"Bas", "password":"phiona"}
+    #     data3 = {'recipe_name':'peas', 'description':1234}
+
+    #     #self.client = app.test_client()
+    #     with self.client:
+    #         response = self.client.post('/user', data = self.user)
+    #         #self.assertEqual(response.status_code, 201)
+    #         #response = self.client.post('/login', data = data1)
+    #         # h = Headers()
+    #         # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
+    #         responses = self.client.post('/login', data = data2)
+    #         #result = jsonify(responses)
+    #         result = json.loads(responses.data.decode())
+    #         auth =result['token']
+    #         h = Headers()
+    #         h.add('x-access-token', auth)
+    #         category = self.client.post('/category', headers = h, data = self.category)
+    #         recipe = self.client.post('/1/recipes', headers = h, data = data3)
+    #         results =json.loads(recipe.data)
+    #         self.assertEqual(recipe.status_code, 400)
+    #         self.assertEqual(results['message'],'invalid input use format peas')

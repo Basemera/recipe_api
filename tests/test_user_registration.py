@@ -28,9 +28,9 @@ class TestUsermodelTestCase(BaseTestCase):
 #                 'lastname':'kiwa'
 #         }
 #         with self.client:
-#               self.client.post('/user/', data=data)
-#               response = self.client.post('/user/', data=data1)
-#               self.assertEqual(response.status_code, 400)
+#               self.client.post('/user', data=data)
+#               response = self.client.post('/user', data=data1)
+#               self.assertEqual(response.status_code, 470)
 
 
         def test_user_registration_with_validation(self):
@@ -79,7 +79,57 @@ class TestUsermodelTestCase(BaseTestCase):
                 self.assertEqual(response1.status_code, 422)
                 self.assertEqual(response2.status_code, 422)
 
-        #        
+        def test_username_not_valid(self):
+                data = {'username':1234,
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'firstname':'Second',
+                        'lastname':'User'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], 'invalid username use phiona format')
+
+        def test_firstname_not_valid(self):
+                data = {'username':'phiona',
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'firstname':'1234',
+                        'lastname':'User'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], 'invalid input use format Phiona')
+
+        def test_firstname_not_valid(self):
+                data = {'username':'phiona',
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'firstname':'phiona',
+                        'lastname':'1234'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], 'invalid input use format Basemera')
+
+
+        def test_email_not_valid(self):
+                data = {'username':'phiona',
+                        'email':'bb@@c.com',
+                        'password':'87654321',
+                        'firstname':'phiona',
+                        'lastname':'basem'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], 'invalid email')
+
+           
+                
 
 
     

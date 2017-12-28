@@ -247,5 +247,25 @@ class TestCategoriesTestCase(BaseTestCase):
             results = json.loads(category_response.data)
             self.assertEqual(category_response.status_code, 201)
             self.assertIn('fish', results['category_name'])
+    def test_validate_category_name(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        data3 = {'category_name':1234}
+        #self.client = app.test_client()
+        with self.client:
+            response = self.client.post('/user', data = self.user)
+            #self.assertEqual(response.status_code, 201)
+            #response = self.client.post('/login', data = data1)
+            # h = Headers()
+            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
+            responses = self.client.post('/login', data = data2)
+            #result = jsonify(responses)
+            result = json.loads(responses.data.decode())
+            auth =result['token']
+            h = Headers()
+            h.add('x-access-token', auth)
+            category_response = self.client.post('/category', headers = h, data = data3)
+            results =json.loads(category_response.data)
+            self.assertEqual(category_response.status_code, 400)
+            self.assertEqual(results['message'],'invalid input use format peas')
 
     
