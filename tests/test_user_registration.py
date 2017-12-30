@@ -33,7 +33,7 @@ class TestUsermodelTestCase(BaseTestCase):
 #               self.assertEqual(response.status_code, 470)
 
 
-        def test_user_registration_with_validation(self):
+        def test_user_registration(self):
                 
                 data = {'username':'seconduser',
                         'email':'bb@c.com',
@@ -79,6 +79,103 @@ class TestUsermodelTestCase(BaseTestCase):
                 self.assertEqual(response1.status_code, 422)
                 self.assertEqual(response2.status_code, 422)
 
+        def test_username_is_empty_string(self):
+                data1 = {'username':'',
+                        'email':'bab@c.com',
+                        'password':'87654321',
+                        'firstname':'phiona',
+                        'lastname':'bas'
+                }
+
+                payload = json.dumps(data1)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')
+                response1 = self.client.post('/user', data=data1)
+                result = json.loads(response1.data)
+                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(result['error'], 'all fields must be filled')
+
+        def test_email_is_empty_string(self):
+                data1 = {'username':'phiona',
+                        'email':'',
+                        'password':'87654321',
+                        'firstname':'phiona',
+                        'lastname':'bas'
+                }
+
+                payload = json.dumps(data1)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')
+                response1 = self.client.post('/user', data=data1)
+                result = json.loads(response1.data)
+                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(result['error'], 'all fields must be filled')
+
+        def test_password_is_empty_string(self):
+                data1 = {'username':'phiona',
+                        'email':'basp@tre.com',
+                        'password':'',
+                        'firstname':'phiona',
+                        'lastname':'bas'
+                }
+
+                payload = json.dumps(data1)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')
+                response1 = self.client.post('/user', data=data1)
+                result = json.loads(response1.data)
+                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(result['error'], 'all fields must be filled')
+
+        def test_firstname_is_empty_string(self):
+                data1 = {'username':'phiona',
+                        'email':'basp@tre.com',
+                        'password':'123456789',
+                        'firstname':'',
+                        'lastname':'bas'
+                }
+
+                payload = json.dumps(data1)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')
+                response1 = self.client.post('/user', data=data1)
+                result = json.loads(response1.data)
+                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(result['error'], 'all fields must be filled')
+
+        def test_lastname_is_empty_string(self):
+                data1 = {'username':'phiona',
+                        'email':'basp@tre.com',
+                        'password':'123456789',
+                        'firstname':'phiona',
+                        'lastname':''
+                }
+
+                payload = json.dumps(data1)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')
+                response1 = self.client.post('/user', data=data1)
+                result = json.loads(response1.data)
+                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(result['error'], 'all fields must be filled')
+        def test_user_already_exists(self):
+                payload = json.dumps(self.user)
+                #print(payload)
+                h = Headers()
+                h.add('Content-Type', 'application/json')  
+                user = self.client.post('/user', data=self.user)
+                response = self.client.post('/user', data=self.user)
+                results=json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'],'User already exists')
+
+                
+
         def test_username_not_valid(self):
                 data = {'username':1234,
                         'email':'bb@c.com',
@@ -91,6 +188,18 @@ class TestUsermodelTestCase(BaseTestCase):
                 self.assertEqual(response.status_code, 400)
                 self.assertEqual(results['message'], 'invalid username use phiona format')
 
+        def test_username_not_provided(self):
+                data = {
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'firstname':'Second',
+                        'lastname':'User'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], {'username': 'username cannot be empty'})
+
         def test_firstname_not_valid(self):
                 data = {'username':'phiona',
                         'email':'bb@c.com',
@@ -101,9 +210,20 @@ class TestUsermodelTestCase(BaseTestCase):
                 response = self.client.post('/user', data=data)
                 results = json.loads(response.data)
                 self.assertEqual(response.status_code, 400)
-                self.assertEqual(results['message'], 'invalid input use format Phiona')
+                self.assertEqual(results['message'], 'invalid input on firstname use format Phiona')
 
-        def test_firstname_not_valid(self):
+        def test_firstname_not_provided(self):
+                data = {'username':'phiona',
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'lastname':'User'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], {'firstname': 'firstname cannot have special characters or intergers'})
+
+        def test_lastname_not_valid(self):
                 data = {'username':'phiona',
                         'email':'bb@c.com',
                         'password':'87654321',
@@ -113,7 +233,19 @@ class TestUsermodelTestCase(BaseTestCase):
                 response = self.client.post('/user', data=data)
                 results = json.loads(response.data)
                 self.assertEqual(response.status_code, 400)
-                self.assertEqual(results['message'], 'invalid input use format Basemera')
+                self.assertEqual(results['message'], 'invalid input on lastname use format Basemera')
+
+        def test_lastname_not_provided(self):
+                data = {'username':'phiona',
+                        'email':'bb@c.com',
+                        'password':'87654321',
+                        'firstname':'phiona'
+                        
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], {'lastname': 'lastname cannot have special characters or intergers'})
 
 
         def test_email_not_valid(self):
@@ -127,6 +259,40 @@ class TestUsermodelTestCase(BaseTestCase):
                 results = json.loads(response.data)
                 self.assertEqual(response.status_code, 400)
                 self.assertEqual(results['message'], 'invalid email')
+
+        def test_email_not_provided(self):
+                data = {'username':'phiona',
+                        'password':'87654321',
+                        'firstname':'phiona',
+                        'lastname':'basem'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], {'email': 'email not provided'})
+
+        def test_password_not_provided(self):
+                data = {'username':'phiona',
+                        'firstname':'phiona',
+                        'lastname':'basem',
+                        'email':'basp@yaho.com'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], {'password': 'password cannot be empty'})
+
+        def test_password_not_less_9characters(self):
+                data = {'username':'phiona',
+                        'firstname':'phiona',
+                        'lastname':'basem',
+                        'password':'car',
+                        'email':'basp@yaho.com'
+                }
+                response = self.client.post('/user', data=data)
+                results = json.loads(response.data)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(results['message'], 'password has to be more than 8 characters')
 
            
                 

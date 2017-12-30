@@ -95,9 +95,9 @@ class AddUser(Resource):
         #parser.add_argument('userid', type = int)
         parser.add_argument('username', type = str, required = True, help='username cannot be empty')
         parser.add_argument('email', type = str, help='email not provided', required=True)
-        parser.add_argument('password', type = str, required=True, help='password has to be a minimum of 8 characters')
-        parser.add_argument('firstname', type = str, required=True, help='firstname cannot have special characters or intergers')
-        parser.add_argument('lastname', type = str, required=True, help='lastname cannot have special characters or intergers')
+        parser.add_argument('password', type = str, required=True, help='password cannot be empty')
+        parser.add_argument('firstname', type = str, required=True, help='firstname must be a string')
+        parser.add_argument('lastname', type = str, required=True, help='lastname must be a string')
         args = parser.parse_args()
         #userid = args['userid']
         if key_is_not_empty(args):
@@ -112,9 +112,11 @@ class AddUser(Resource):
         if not is_username_valid(username):
             return {'message':'invalid username use phiona format'}, 400
         if not is_firstname_valid(firstname):
-            return {'message':'invalid input use format Phiona'}, 400
+            return {'message':'invalid input on firstname use format Phiona'}, 400
         if not is_lastname_valid(lastname):
-            return {'message':'invalid input use format Basemera'}, 400
+            return {'message':'invalid input on lastname use format Basemera'}, 400
+        if len(password)<8:
+            return {'message':'password has to be more than 8 characters'}, 400
         person = User.query.filter_by(username = username, email = email).first()
         if person is None:
             new_user = User(username, email, password, firstname, lastname)

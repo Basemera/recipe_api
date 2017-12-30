@@ -174,6 +174,7 @@ class TestSearchTestCase(BaseTestCase):
 
 
 
+
 class TestRecipeSearchTestCase(BaseTestCase):
     def testgetallrecipes(self):
         data2 ={'username':"Bas", "password":"phiona"}
@@ -337,5 +338,44 @@ class TestRecipeSearchTestCase(BaseTestCase):
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
 
+    def testgetallcategoriesforauser(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        #self.client = app.test_client()
+        with self.client:
+            user = self.client.post('/user', data=self.user)
+            logged_in = self.client.post('/login', data = data2)
+
+            result = json.loads(logged_in.data)
+            auth = result['token']
     
+            h = Headers()
+            h.add('x-access-token', auth)
+        
+            resp = self.client.post('/category', headers = h, data = self.category)
             
+           
+            search = self.client.get('/category', headers=h)
+            result = json.loads(search.data)
+            self.assertEqual(search.status_code, 200)
+            
+
+    # def testsearchnosearchpageparameternotintergerprovided(self):
+    #     data2 ={'username':"Bas", "password":"phiona"}
+    #     #self.client = app.test_client()
+    #     with self.client:
+    #         user = self.client.post('/user', data=self.user)
+    #         logged_in = self.client.post('/login', data = data2)
+
+    #         result = json.loads(logged_in.data)
+    #         auth = result['token']
+    
+    #         h = Headers()
+    #         h.add('x-access-token', auth)
+        
+    #         resp = self.client.post('/category', headers = h, data = self.category)
+           
+    #         search = self.client.get('/category/search?q=peas&per_page=t&page=t', headers=h)
+    #         result = json.loads(search.data)
+    #         self.assertEqual(search.status_code, 200)
+    #         self.assertEqual(result['error'], 'you must specify an interger')
+    #  

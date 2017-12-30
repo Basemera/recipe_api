@@ -44,6 +44,71 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(response.status_code, 201)
             self.assertEqual(result['message'], 'Category created')
 
+    def test_token_requirred(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        #self.client = app.test_client()
+        with self.client:
+            response = self.client.post('/user', data=self.user)
+            #self.assertEqual(response.status_code, 201)
+            #response = self.client.post('/login', data = data1)
+            # h = Headers()
+            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
+            responses = self.client.post('/login', data = data2)
+            #result = jsonify(responses)
+            result = json.loads(responses.data.decode())
+            
+            #print (result)
+            #self.assertEqual(responses.status_code, 200)
+            #self.assertEqual(result['message'], 'You have successfully logged in')
+            #self.assertTrue(result['token'])
+            auth = result['token']
+            #token = User.verify_auth_token(auth)
+            h = Headers()
+            # h.add('x-access-token', auth)
+        
+            response = self.client.post('/category', headers = h, data = self.category)
+            result = json.loads(response.data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(result['message'], 'token is missing')
+
+    def test_token_expired(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        #self.client = app.test_client()
+        with self.client:
+            response = self.client.post('/user', data=self.user)
+            
+            responses = self.client.post('/login', data = data2)
+            
+            result = json.loads(responses.data.decode())
+            auth = 'eyJhbGciOiJIUzI1NiIsImlhdCI6MTUxNDU4NjQxNiwiZXhwIjoxNTE0NTkyNDE2fQ.eyJ1c2VyaWQiOjE0fQ.5M0O41VxHuzoU0x43XfgS1yAq6XAD441wlUr-UPMmJE'
+            
+            h = Headers()
+            h.add('x-access-token', auth)
+        
+            response = self.client.post('/category', headers = h, data = self.category)
+            result = json.loads(response.data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(result['message'], 'token has expired')
+
+    def test_invalid_token(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        #self.client = app.test_client()
+        with self.client:
+            response = self.client.post('/user', data=self.user)
+            
+            responses = self.client.post('/login', data = data2)
+            
+            result = json.loads(responses.data.decode())
+            auth = 'phiona'
+            
+            h = Headers()
+            h.add('x-access-token', auth)
+        
+            response = self.client.post('/category', headers = h, data = self.category)
+            result = json.loads(response.data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(result['message'], 'Invalid token')
+
     def test_creating_duplicate_category(self):
         data2 = {'username':"Bas", "password":"phiona"}
     
