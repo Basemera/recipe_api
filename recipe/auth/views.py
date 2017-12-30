@@ -58,16 +58,46 @@ api = Api(autho)
 #         users = data['userid']
 #         user = User.query.filter_by(userid = data['userid']).first()
 #         return f(*args, **kwargs)
+import re
+# def isValidEmail(email):
+#     if len(email) > 7:
+#         r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+#         if re.match("^.+@([?)[a-zA-Z0-9-.]+.([a-zA-Z]{2,3}|[0-9]{1,3})(]?)$", email) != None:
+#             return True
+#         return False
+#     return False
+def is_email_address_valid(email):
+    """Validate the email address using a regex."""
+    if not re.match("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", email):
+        return False
+    return True
+
+def is_username_valid(username):
+    if re.match("^[A-Za-z_-]*$", username):
+        return True
+    return False
+
+def is_firstname_valid(firstname):
+    if re.match("^[A-Za-z_-]*$", firstname):
+        return True
+    return False
+
+def is_lastname_valid(lastname):
+    if re.match("^[A-Za-z_-]*$", lastname):
+        return True
+    return False
+
+
 class AddUser(Resource):
     #@app.route('/user', methods= ['POST'])
     def post(self):  
         parser = reqparse.RequestParser()
         #parser.add_argument('userid', type = int)
-        parser.add_argument('username', type = str, required = True)
-        parser.add_argument('email', type = str)
-        parser.add_argument('password', type = str)
-        parser.add_argument('firstname', type = str)
-        parser.add_argument('lastname', type = str)
+        parser.add_argument('username', type = str, required = True, help='username cannot be empty')
+        parser.add_argument('email', type = str, help='email not provided', required=True)
+        parser.add_argument('password', type = str, required=True, help='password has to be a minimum of 8 characters')
+        parser.add_argument('firstname', type = str, required=True, help='firstname cannot have special characters or intergers')
+        parser.add_argument('lastname', type = str, required=True, help='lastname cannot have special characters or intergers')
         args = parser.parse_args()
         #userid = args['userid']
         if key_is_not_empty(args):
@@ -77,6 +107,14 @@ class AddUser(Resource):
         password = args['password']
         firstname = args['firstname']
         lastname = args['lastname']
+        if not is_email_address_valid(email):
+            return {'message':'invalid email'}, 400
+        if not is_username_valid(username):
+            return {'message':'invalid username use phiona format'}, 400
+        if not is_firstname_valid(firstname):
+            return {'message':'invalid input use format Phiona'}, 400
+        if not is_lastname_valid(lastname):
+            return {'message':'invalid input use format Basemera'}, 400
         person = User.query.filter_by(username = username, email = email).first()
         if person is None:
             new_user = User(username, email, password, firstname, lastname)
@@ -86,30 +124,32 @@ class AddUser(Resource):
             #return ({"message": "Success"})
         else:
             return {"message": "User already exists"}, 400
+    # return {'message':'invalid credentials'}
+        
 
-class EditUser(Resource):
-    @login_required
-    def put(self, userid):
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type = str)
-        args = parser.parse_args()
-        username = args['username']
-        user = User.query.filter_by(userid = userid).first()
-        if user is None:
-            return ({'message':'user doesnot exist'})
-        user.username = username
-        db.session.commit()
-        return ({'username':user.username})
+# class EditUser(Resource):
+#     @login_required
+#     def put(self, userid):
+#         parser = reqparse.RequestParser()
+#         parser.add_argument('username', type = str)
+#         args = parser.parse_args()
+#         username = args['username']
+#         user = User.query.filter_by(userid = userid).first()
+#         if user is None:
+#             return ({'message':'user doesnot exist'})
+#         user.username = username
+#         db.session.commit()
+#         return ({'username':user.username})
 
-    @login_required
-    def delete(self, userid):
-        user = User.query.filter_by(userid = userid).first()
-        if user is None:
-            return ({'message':'user doesnot exist'})
-        username = user.username
-        db.session.delete(user)
-        db.session.commit()
-        return ({'User deleted':username})
+#     @login_required
+#     def delete(self, userid):
+#         user = User.query.filter_by(userid = userid).first()
+#         if user is None:
+#             return ({'message':'user doesnot exist'})
+#         username = user.username
+#         db.session.delete(user)
+#         db.session.commit()
+#         return ({'User deleted':username})
 
 class Login(Resource):
     #@login_required

@@ -13,6 +13,11 @@ from recipe.helpers import key_is_not_empty, login_required, keys_is_not_empty
 
 api_category = Api(category)
 resource_fields = {'category_name':fields.String, 'category_id':fields.String}
+import re
+def is_category_name_valid(category_name):
+    if re.match("^[A-Za-z_-]*$", category_name):
+        return True
+    return False
 
 class Addcategory(Resource):
     @login_required
@@ -30,10 +35,9 @@ class Addcategory(Resource):
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
         category = RecipeCategory.query.filter_by(category_name = category_name, user = userid).first()
-        #user = token
-        # if user is None:
-        #     return ({"message": "you are not logged in"})
-        #else:
+        
+        if not is_category_name_valid(category_name):
+            return {'message':'invalid input use format peas'}, 400
         if category is None:
             #userid = userid
             new_category = RecipeCategory(category_name = category_name, user = userid)
@@ -57,7 +61,7 @@ class Addcategory(Resource):
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
         
-        cat = RecipeCategory.query.filter_by(user=userid).first()
+        cat = RecipeCategory.query.filter_by(user=userid).all()
         if cat is None:
             return jsonify({'message':'no categories to display'})
         #categories = RecipeCategory.get_all_categories()
@@ -154,32 +158,43 @@ class search(Resource):
     def get(self):
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
-        q = request.args.get('q', '')
-        per_page = request.args.get('per_page')
-        page = request.args.get('page')
+        parser = reqparse.RequestParser()
+        parser.add_argument('q', type = str)
+        parser.add_argument('per_page', default=2)
+        parser.add_argument('page', default=1)
+        args = parser.parse_args()
+        q = args['q']
+        per_page = args['per_page']
+        page = args['page']
+        # q = request.args.get('q', '')
+        # per_page = request.args.get('per_page')
+        # page = request.args.get('page')
         
         if not q:
             response= {"message": "Search item not provided"}
-            return ({"message":"search item not provided"})
+            return ({"message":"search item not provided"}), 400
             #return make_response(response), 200
-
-        # if type(per_page)!= int and type(page)!=int:
-        #     return ({"error":"you must specify an interger"})
+        if page and per_page is None:
+            page =1
+            per_page=2
         
-        results = []
+        
+        
         recipe_search_query = RecipeCategory.query.filter(RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(user=userid).paginate(per_page=10, page=1, error_out=False)
-        if not recipe_search_query:
-            response = "Category doesnot exist"
-            return ({"message":"search item not found"}), 404
-            #return make_response(jsonify(response))
-        for category in recipe_search_query.items:
-            cat_obj = {
-                "name": category.category_name,
-                "page_number": recipe_search_query.page,
-                "items_returned": recipe_search_query.total
-            }
-            results.append(cat_obj)
-            return make_response(jsonify(results))
+        if recipe_search_query:
+            # # response = "Category doesnot exist"
+            # return ({"message":"search item not found"}), 404
+            # #return make_response(jsonify(response))
+            for item in recipe_search_query.items:
+                cat_obj = {
+                    "name": item.category_name,
+                    "page_number": recipe_search_query.page,
+                    "items_returned": recipe_search_query.total
+                }
+                results = []
+                results.append(cat_obj)
+                return make_response(jsonify(results),200)
+        return ({"message":"search item not found"}), 404
         # if not recipe_search_query:
         #     response= {"message": "Search item not found"}
         #     return make_response(jsonify(response)), 200
