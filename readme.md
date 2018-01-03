@@ -1,1 +1,2 @@
 [![Build Status](https://travis-ci.org/Basemera/recipe_api.svg?branch=user_authentication)](https://travis-ci.org/Basemera/recipe_api)
+[![Coverage Status](https://coveralls.io/repos/github/Basemera/recipe_api/badge.svg?branch=master)](https://coveralls.io/github/Basemera/recipe_api?branch=master)
