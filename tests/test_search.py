@@ -12,13 +12,14 @@ from recipe.categories.views import Addcategory, api_category
 
 class TestSearchTestCase(BaseTestCase):
     def testsearchcategories(self):
-        data2 ={'username':"Bas", "password":"phiona"}
+        data2 ={'username':"Bas", "password":"phiona1984"}
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
+            print (result)
             auth = result['token']
     
             h = Headers()
@@ -36,7 +37,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -58,7 +59,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -78,7 +79,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -98,7 +99,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -117,7 +118,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -137,7 +138,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -157,7 +158,7 @@ class TestSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -181,7 +182,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -202,7 +203,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -224,7 +225,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -245,7 +246,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -266,7 +267,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -285,7 +286,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -305,7 +306,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             #self.client = app.test_client()
             with self.client:
                 user = self.client.post('/user', data=self.user)
-                logged_in = self.client.post('/login', data = data2)
+                logged_in = self.client.post('/login', data = self.data2)
 
                 result = json.loads(logged_in.data)
                 auth = result['token']
@@ -324,7 +325,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']
@@ -343,7 +344,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data = data2)
+            logged_in = self.client.post('/login', data = self.data2)
 
             result = json.loads(logged_in.data)
             auth = result['token']

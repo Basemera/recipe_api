@@ -221,7 +221,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 response = self.client.post('/user', data=data)
                 results = json.loads(response.data)
                 self.assertEqual(response.status_code, 400)
-                self.assertEqual(results['message'], {'firstname': 'firstname cannot have special characters or intergers'})
+                self.assertEqual(results['message'], {'firstname': 'firstname must be a string'})
 
         def test_lastname_not_valid(self):
                 data = {'username':'phiona',
@@ -245,7 +245,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 response = self.client.post('/user', data=data)
                 results = json.loads(response.data)
                 self.assertEqual(response.status_code, 400)
-                self.assertEqual(results['message'], {'lastname': 'lastname cannot have special characters or intergers'})
+                self.assertEqual(results['message'], {'lastname': 'lastname must be a string'})
 
 
         def test_email_not_valid(self):

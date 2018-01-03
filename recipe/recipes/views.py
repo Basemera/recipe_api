@@ -6,7 +6,7 @@ from functools import wraps
 from recipe import app, db
 from . import recipe
 from recipe.models import RecipeCategory, User, Recipes
-from recipe.helpers import key_is_not_empty, login_required, keyss_is_not_empty
+from recipe.helpers import value_is_empty, login_required, valuess_is_empty
 
 
 api_recipe = Api(recipe)
@@ -32,7 +32,7 @@ class Addrecipe(Resource):
         parser.add_argument('recipe_name', type = str)
         parser.add_argument('description', type = str, default='')
         args = parser.parse_args()
-        if keyss_is_not_empty(args):
+        if valuess_is_empty(args):
 
             return {'error': 'all fields must be filled'}, 422
         #recipe_id = args['recipe_id']

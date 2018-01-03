@@ -14,10 +14,10 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         app.config.from_object("recipe.config.TestingConfig")
         self.client = app.test_client()
-        self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona', 'firstname':'Phiona', 'lastname':'Bas'}
+        self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona1984', 'firstname':'Phiona', 'lastname':'Bas'}
         self.category = {'category_name':"fish"}
         self.recipe = {'recipe_name':"stew", 'description':"prepared with water"}
-        self.data2 ={'username':"Bas", "password":"phiona"}
+        self.data2 ={'username':"Bas", "password":"phiona1984"}
         # def create_apps(self):
         #     """Setup app and its configs"""
 

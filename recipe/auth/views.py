@@ -19,7 +19,7 @@ from recipe import app, db
 from . import autho
 from recipe.models import User
 #from . import autho
-from recipe.helpers import key_is_not_empty, login_required
+from recipe.helpers import values_is_empty, login_required
 
 
 
@@ -100,7 +100,7 @@ class AddUser(Resource):
         parser.add_argument('lastname', type = str, required=True, help='lastname must be a string')
         args = parser.parse_args()
         #userid = args['userid']
-        if key_is_not_empty(args):
+        if values_is_empty(args):
             return {'error': 'all fields must be filled'}, 422
         username = args['username']
         email = args['email']

@@ -18,15 +18,14 @@ from tests.base import BaseTestCase
 class TestCategoriesTestCase(BaseTestCase):
     """testing creating categories"""
     def test_creating_categories(self):
-        data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
+        
         with self.client:
             response = self.client.post('/user', data=self.user)
             #self.assertEqual(response.status_code, 201)
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -45,15 +44,14 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(result['message'], 'Category created')
 
     def test_token_requirred(self):
-        data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
+        
         with self.client:
             response = self.client.post('/user', data=self.user)
             #self.assertEqual(response.status_code, 201)
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -72,12 +70,11 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(result['message'], 'token is missing')
 
     def test_token_expired(self):
-        data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
+        
         with self.client:
             response = self.client.post('/user', data=self.user)
             
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             
             result = json.loads(responses.data.decode())
             auth = 'eyJhbGciOiJIUzI1NiIsImlhdCI6MTUxNDU4NjQxNiwiZXhwIjoxNTE0NTkyNDE2fQ.eyJ1c2VyaWQiOjE0fQ.5M0O41VxHuzoU0x43XfgS1yAq6XAD441wlUr-UPMmJE'
@@ -91,12 +88,11 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(result['message'], 'token has expired')
 
     def test_invalid_token(self):
-        data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
+        
         with self.client:
             response = self.client.post('/user', data=self.user)
             
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             
             result = json.loads(responses.data.decode())
             auth = 'phiona'
@@ -110,7 +106,7 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(result['message'], 'Invalid token')
 
     def test_creating_duplicate_category(self):
-        data2 = {'username':"Bas", "password":"phiona"}
+        
     
         #self.client = app.test_client()
         with self.client:
@@ -119,7 +115,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -141,7 +137,7 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(result['message'], 'Category already exists')
 
     def test_empty_string_not_allowed(self):
-        data2 ={'username':"Bas", "password":"phiona"}
+        
         data3 = {'category_name':"     "}
         #self.client = app.test_client()
         with self.client:
@@ -150,7 +146,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -172,7 +168,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
 
     def test_edit_category(self):
-        data2 ={'username':"Bas", "password":"phiona"}
+       
         data3 = {'category_name':"seafood"}
         #self.client = app.test_client()
         with self.client:
@@ -181,7 +177,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -203,7 +199,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_edit_nonexistant_category(self):
         data2 ={'username':"Bas", "password":"phiona"}
-        data3 = {'category_name':"seafood"}
+        data3 = {'category_name':"lunch"}
         #self.client = app.test_client()
         with self.client:
             response = self.client.post('/user', data = self.user)
@@ -211,20 +207,16 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
             #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category_response = self.client.post('/category', headers = h, data = self.category)
-            category_response = self.client.put('/category/2', headers = h)
+            category_response = self.client.put('/category/2', headers = h, data = data3)
             results = json.loads(category_response.data)
             self.assertEqual(category_response.status_code, 404)
             self.assertEqual(results['message'], 'category doesnot exist')
@@ -239,7 +231,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -267,7 +259,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -286,7 +278,7 @@ class TestCategoriesTestCase(BaseTestCase):
             self.assertEqual(results['message'], 'category doesnot exist')
 
     def test_getting_all_categories(self):
-        data2 ={'username':"Bas", "password":"phiona"}
+        # data2 ={'username':"Bas", "password":"phiona"}
         data3 = {'category_name':"seafood"}
         #self.client = app.test_client()
         with self.client:
@@ -295,7 +287,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -322,7 +314,7 @@ class TestCategoriesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             auth =result['token']

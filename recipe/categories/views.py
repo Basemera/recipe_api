@@ -8,7 +8,7 @@ from functools import wraps
 from recipe import app, db
 from . import category
 from recipe.models import RecipeCategory, User
-from recipe.helpers import key_is_not_empty, login_required, keys_is_not_empty
+from recipe.helpers import value_is_empty, login_required
 # from auth.views import api, autho
 
 api_category = Api(category)
@@ -27,7 +27,7 @@ class Addcategory(Resource):
         #parser.add_argument('category_id', type = int)
         parser.add_argument('category_name', type = str)
         args = parser.parse_args()
-        if keys_is_not_empty(args):
+        if value_is_empty(args):
 
             return {'error': 'all fields must be filled'}, 422
         
@@ -128,6 +128,9 @@ class editcategory(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('category_name', type = str)
         args = parser.parse_args()
+        if value_is_empty(args):
+    
+            return {'error': 'all fields must be filled'}, 422
         category_name = args['category_name']
         cat = RecipeCategory.query.filter_by(category_id = category_id).first()
         if cat is None:

@@ -46,7 +46,7 @@ class TestRecipesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -72,7 +72,7 @@ class TestRecipesTestCase(BaseTestCase):
         with self.client:
             response = self.client.post('/user', data=self.user)
             
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             
             result = json.loads(responses.data.decode())
             auth = 'eyJhbGciOiJIUzI1NiIsImlhdCI6MTUxNDU4NjQxNiwiZXhwIjoxNTE0NTkyNDE2fQ.eyJ1c2VyaWQiOjE0fQ.5M0O41VxHuzoU0x43XfgS1yAq6XAD441wlUr-UPMmJE'
@@ -93,7 +93,7 @@ class TestRecipesTestCase(BaseTestCase):
         with self.client:
             response = self.client.post('/user', data=self.user)
             
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             
             result = json.loads(responses.data.decode())
             auth = 'phiona'
@@ -324,7 +324,7 @@ class TestRecipesTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             auth =result['token']
