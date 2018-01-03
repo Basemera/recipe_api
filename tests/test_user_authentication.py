@@ -27,7 +27,7 @@ class TestUserAuthenticationTestCase(BaseTestCase):
             #response = self.client.post('/login', data = data1)
             # h = Headers()
             # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = data2)
+            responses = self.client.post('/login', data = self.data2)
             #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             
@@ -74,7 +74,7 @@ class TestUserAuthenticationTestCase(BaseTestCase):
 
             #self.assertEqual(responses.status_code, 200)
             
-
+    
         
         # h = Headers()
         # h.add('Content-Type', 'application/json')

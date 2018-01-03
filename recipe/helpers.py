@@ -2,30 +2,31 @@ from functools import wraps
 from flask import request, jsonify
 from flask_restful import Resource, fields, marshal_with
 from .models import *
-def key_is_not_empty(args):
+def values_is_empty(args):
     keys = ('username', 'email', 'password', 'firstname', 'lastname')
     #keyss = ('category_name')
     for key in keys:
-        if key_is_space(args[key]) == '':
+        if value_is_space(args[key]) == '':
             return True
     # for key in keyss:
     #     if key_is_space(args[key]) == '':
     #         return True
-def keys_is_not_empty(args):
+def value_is_empty(args):
     key = ('category_name')
     #keyss = ('category_name')
     
-    if key_is_space(args[key]) == '':
+    if value_is_space(args[key]) == '':
         return True
+    return False
 
-def keyss_is_not_empty(args):
+def valuess_is_empty(args):
     keyss = ('recipe_name', 'description')
     for key in keyss:
     
-        if key_is_space(args[key]) == '':
+        if value_is_space(args[key]) == '':
             return True
 
-def key_is_space(string):
+def value_is_space(string):
     return string.strip()
 
 def login_required(f):
@@ -47,7 +48,7 @@ def login_required(f):
             return jsonify({'message': 'Invalid token'}) # invalid token
         users = data['userid']
         user = User.query.filter_by(userid = data['userid']).first()
-        print(user)
+        # print(user)
         return f(*args, **kwargs)
     return decorated
 
