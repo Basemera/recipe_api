@@ -180,7 +180,7 @@ class TestRecipesTestCase(BaseTestCase):
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
             responses = self.client.post('/1/recipes', headers = h, data = self.recipe)
-            response = self.client.get('/recipes', headers = h)
+            response = self.client.get('/1/recipe', headers = h)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 200)
             self.assertIn('stew', str(result))
