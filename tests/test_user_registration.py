@@ -76,8 +76,8 @@ class TestUsermodelTestCase(BaseTestCase):
                 self.assertEqual(response.status_code, 201)
                 self.assertIn('bb@c.com', data['email'])
                 self.assertIn('User', data['lastname'])
-                self.assertEqual(response1.status_code, 422)
-                self.assertEqual(response2.status_code, 422)
+                self.assertEqual(response1.status_code, 400)
+                self.assertEqual(response2.status_code, 400)
 
         def test_username_is_empty_string(self):
                 data1 = {'username':'',
@@ -93,7 +93,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 h.add('Content-Type', 'application/json')
                 response1 = self.client.post('/user', data=data1)
                 result = json.loads(response1.data)
-                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(response1.status_code, 400)
                 self.assertEqual(result['error'], 'all fields must be filled')
 
         def test_email_is_empty_string(self):
@@ -110,7 +110,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 h.add('Content-Type', 'application/json')
                 response1 = self.client.post('/user', data=data1)
                 result = json.loads(response1.data)
-                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(response1.status_code, 400)
                 self.assertEqual(result['error'], 'all fields must be filled')
 
         def test_password_is_empty_string(self):
@@ -127,7 +127,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 h.add('Content-Type', 'application/json')
                 response1 = self.client.post('/user', data=data1)
                 result = json.loads(response1.data)
-                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(response1.status_code, 400)
                 self.assertEqual(result['error'], 'all fields must be filled')
 
         def test_firstname_is_empty_string(self):
@@ -144,7 +144,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 h.add('Content-Type', 'application/json')
                 response1 = self.client.post('/user', data=data1)
                 result = json.loads(response1.data)
-                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(response1.status_code, 400)
                 self.assertEqual(result['error'], 'all fields must be filled')
 
         def test_lastname_is_empty_string(self):
@@ -161,7 +161,7 @@ class TestUsermodelTestCase(BaseTestCase):
                 h.add('Content-Type', 'application/json')
                 response1 = self.client.post('/user', data=data1)
                 result = json.loads(response1.data)
-                self.assertEqual(response1.status_code, 422)
+                self.assertEqual(response1.status_code, 400)
                 self.assertEqual(result['error'], 'all fields must be filled')
         def test_user_already_exists(self):
                 payload = json.dumps(self.user)
