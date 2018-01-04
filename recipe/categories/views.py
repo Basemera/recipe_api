@@ -20,11 +20,10 @@ def is_category_name_valid(category_name):
     return False
 
 class Addcategory(Resource):
+    """class to handle """
     @login_required
     def post(self): 
         parser = reqparse.RequestParser()
-        #parser.add_argument('userid', type = int)
-        #parser.add_argument('category_id', type = int)
         parser.add_argument('category_name', type = str)
         args = parser.parse_args()
         if value_is_empty(args):
@@ -129,7 +128,6 @@ class editcategory(Resource):
         parser.add_argument('category_name', type = str)
         args = parser.parse_args()
         if value_is_empty(args):
-    
             return {'error': 'all fields must be filled'}, 422
         category_name = args['category_name']
         cat = RecipeCategory.query.filter_by(category_id = category_id).first()
