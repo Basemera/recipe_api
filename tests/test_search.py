@@ -241,6 +241,48 @@ class TestRecipeSearchTestCase(BaseTestCase):
             self.assertEqual(search.status_code, 400)
             self.assertEqual(result['message'], 'search item not provided')
 
+    def testsearchnocategoryprovided(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        #self.client = app.test_client()
+        with self.client:
+            user = self.client.post('/user', data=self.user)
+            logged_in = self.client.post('/login', data = self.data2)
+
+            result = json.loads(logged_in.data)
+            auth = result['token']
+    
+            h = Headers()
+            h.add('x-access-token', auth)
+        
+            resp = self.client.post('/category', headers = h, data = self.category)
+            response = self.client.post('/recipe', headers = h, data=self.recipe)
+           
+            search = self.client.get('/recipes/search?q=p&per_page=k&page=1', headers=h)
+            result = json.loads(search.data)
+            self.assertEqual(search.status_code, 400)
+            self.assertEqual(result['message'], 'category not provided')
+
+    def testsearchcategoryprovidedisnotinterger(self):
+        data2 ={'username':"Bas", "password":"phiona"}
+        #self.client = app.test_client()
+        with self.client:
+            user = self.client.post('/user', data=self.user)
+            logged_in = self.client.post('/login', data = self.data2)
+
+            result = json.loads(logged_in.data)
+            auth = result['token']
+    
+            h = Headers()
+            h.add('x-access-token', auth)
+        
+            resp = self.client.post('/category', headers = h, data = self.category)
+            response = self.client.post('/recipe', headers = h, data=self.recipe)
+           
+            search = self.client.get('/recipes/search?q=p&per_page=k&page=1&category=', headers=h)
+            result = json.loads(search.data)
+            self.assertEqual(search.status_code, 400)
+            self.assertEqual(result['message'], {'category': "invalid literal for int() with base 10: ''"})
+
     def testgetallrecipesforauser(self):
         data2 ={'username':"Bas", "password":"phiona"}
         #self.client = app.test_client()
