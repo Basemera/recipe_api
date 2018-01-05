@@ -19,7 +19,6 @@ class TestDevelopmentConfig(TestCase):
     def test_app_is_development(self):
         self.assertTrue(app.config['SECRET_KEY'] == 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg')
         self.assertTrue(app.config['DEBUG'] is True)
-        #self.assertFalse(current_app is None)
         self.assertTrue(
             app.config['SQLALCHEMY_DATABASE_URI'] ==
             'postgresql://postgres@localhost:5432/recipe_api'
@@ -35,7 +34,6 @@ class TestTestingConfig(TestCase):
         self.assertTrue(app.config['SECRET_KEY'] == 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg')
         self.assertTrue(app.config['DEBUG'])
         self.assertTrue(app.config['TESTING'])
-        #self.assertFalse(app.config['PRESERVE_CONTEXT_ON_EXCEPTION'])
         self.assertTrue(
             app.config['SQLALCHEMY_DATABASE_URI'] ==
             'postgresql://postgres@localhost:5432/test_db'
