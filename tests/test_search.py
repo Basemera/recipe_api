@@ -376,7 +376,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             h.add('x-access-token', auth)
         
             resp = self.client.post('/category', headers = h, data = self.category)
-            recipe = self.client.post('/1/recipes', headers = h, data = self.recipe)
+            recipe = self.client.post('/1/recipe', headers = h, data = self.recipe)
             search = self.client.get('/recipes/search?q=stew&per_page=&page=1', headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
