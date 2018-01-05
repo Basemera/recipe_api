@@ -14,21 +14,11 @@ class TestRecipesTestCase(BaseTestCase):
     def test_creating_recipes(self):
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
+
             auth = result['token']
             print (auth)
-            #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
@@ -39,36 +29,21 @@ class TestRecipesTestCase(BaseTestCase):
 
     def test_token_requirred(self):
         data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
         with self.client:
             response = self.client.post('/user', data=self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-            responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
-            result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
-            auth = result['token']
-            #token = User.verify_auth_token(auth)
+            # result = json.loads(response.data.decode())
+
+            # auth = result['token']
             h = Headers()
-            # h.add('x-access-token', auth)
         
             category = self.client.post('/category', headers = h, data = self.category)
-            response = self.client.post('/1/recipes', headers = h, data = self.recipe)
-            result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            responses = self.client.post('/1/recipes', headers = h, data = self.recipe)
+            result = json.loads(responses.data)
+            self.assertEqual(responses.status_code, 200)
             self.assertEqual(result['message'], 'token is missing')
 
     
     def test_token_expired(self):
-        data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
         with self.client:
             response = self.client.post('/user', data=self.user)
             
@@ -88,8 +63,6 @@ class TestRecipesTestCase(BaseTestCase):
 
 
     def test_token_expired(self):
-        data2 ={'username':"Bas", "password":"phiona"}
-        #self.client = app.test_client()
         with self.client:
             response = self.client.post('/user', data=self.user)
             
@@ -111,20 +84,10 @@ class TestRecipesTestCase(BaseTestCase):
         
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
+
             auth = result['token']
-            #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
@@ -138,20 +101,10 @@ class TestRecipesTestCase(BaseTestCase):
         data = {'recipe_name':'    ', 'description':'beefy'}
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
-            #token = User.verify_auth_token(auth)
+
             h = Headers()
             h.add('x-access-token', auth)
             response = self.client.post('/1/recipes', headers = h, data = data)
@@ -162,20 +115,10 @@ class TestRecipesTestCase(BaseTestCase):
     def test_get_all(self):
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
-            #token = User.verify_auth_token(auth)
+
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
@@ -189,20 +132,9 @@ class TestRecipesTestCase(BaseTestCase):
         
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
-            #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
@@ -217,20 +149,9 @@ class TestRecipesTestCase(BaseTestCase):
         data = {"recipe_name":'seafood', 'description':'Smoked over open fire'}
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
-            #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
@@ -238,25 +159,14 @@ class TestRecipesTestCase(BaseTestCase):
             response = self.client.post('/1/recipes', headers = h, data = data)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 200)
-            #self.assertIn('seafood', str(result) )
 
 
     def test_edit_none_existantrecipe(self):
         data = {"recipe_name":'seafood', 'description':'Smoked over open fire'}
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
             #token = User.verify_auth_token(auth)
             h = Headers()
@@ -277,12 +187,11 @@ class TestRecipesTestCase(BaseTestCase):
             result = json.loads(responses.data.decode())
         
             auth = result['token']
-            #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
             recipe = self.client.post('/1/recipes', headers = h, data = self.recipe)
-            response = self.client.delete('/recipes/1', headers = h)
+            response = self.client.delete('/recipe/1/1', headers = h)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(result['message'], 'recipe successfully deleted')
@@ -290,25 +199,14 @@ class TestRecipesTestCase(BaseTestCase):
     def test_delete_nonexistantrecipe(self):
         with self.client:
             user = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
-            
-            #print (result)
-            #self.assertEqual(responses.status_code, 200)
-            #self.assertEqual(result['message'], 'You have successfully logged in')
-            #self.assertTrue(result['token'])
             auth = result['token']
-            #token = User.verify_auth_token(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category', headers = h, data = self.category)
             recipe = self.client.post('/1/recipes', headers = h, data = self.recipe)
-            response = self.client.delete('/recipes/3', headers = h)
+            response = self.client.delete('/recipe/1/3', headers = h)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 404)
             self.assertEqual(result['message'], 'recipe doesnot exist')
@@ -320,12 +218,7 @@ class TestRecipesTestCase(BaseTestCase):
         #self.client = app.test_client()
         with self.client:
             response = self.client.post('/user', data = self.user)
-            #self.assertEqual(response.status_code, 201)
-            #response = self.client.post('/login', data = data1)
-            # h = Headers()
-            # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
             responses = self.client.post('/login', data = self.data2)
-            #result = jsonify(responses)
             result = json.loads(responses.data.decode())
             auth =result['token']
             h = Headers()
@@ -335,26 +228,3 @@ class TestRecipesTestCase(BaseTestCase):
             results =json.loads(recipe.data)
             self.assertEqual(recipe.status_code, 400)
             self.assertEqual(results['message'],'invalid input use format peas')
-
-    # def test_validate_description(self):
-    #     data2 ={'username':"Bas", "password":"phiona"}
-    #     data3 = {'recipe_name':'peas', 'description':1234}
-
-    #     #self.client = app.test_client()
-    #     with self.client:
-    #         response = self.client.post('/user', data = self.user)
-    #         #self.assertEqual(response.status_code, 201)
-    #         #response = self.client.post('/login', data = data1)
-    #         # h = Headers()
-    #         # h.add('Authorization', "Basic%s" %b64encode(b"username:password").decode("ascii"))
-    #         responses = self.client.post('/login', data = data2)
-    #         #result = jsonify(responses)
-    #         result = json.loads(responses.data.decode())
-    #         auth =result['token']
-    #         h = Headers()
-    #         h.add('x-access-token', auth)
-    #         category = self.client.post('/category', headers = h, data = self.category)
-    #         recipe = self.client.post('/1/recipes', headers = h, data = data3)
-    #         results =json.loads(recipe.data)
-    #         self.assertEqual(recipe.status_code, 400)
-    #         self.assertEqual(results['message'],'invalid input use format peas')

@@ -24,7 +24,7 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, index=True)
     password = db.Column(db.String(128), nullable=False)
     firstname = db.Column(db.String(100), nullable=False, index=True)
-    lastname = db.Column(db.String(100), nullable=False, index=True)
+    #lastname = db.Column(db.String(100), nullable=False, index=True)
     datecreated = db.Column(db.DateTime, default=db.func.current_timestamp())
     datemodified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
@@ -33,12 +33,12 @@ class User(db.Model):
         'RecipeCategory', backref='owner', lazy='dynamic')
     recipes = db.relationship('Recipes', backref='owner', lazy='dynamic')
 
-    def __init__(self, username, email, password, firstname, lastname):
+    def __init__(self, username, email, password, firstname):
         self.username = username
         self.email = email
         self.password = password
         self.firstname = firstname
-        self.lastname = lastname
+        #self.lastname = lastname
 
     
     def save_user(self):
@@ -105,7 +105,8 @@ class User(db.Model):
 
 
 class RecipeCategory(db.Model):
-    """RecipeCategory model This class represents the recipe category model"""
+    """RecipeCategory model This class represents the recipe category 
+    model"""
     __tablename__ = 'recipe_category'
     category_id = db.Column(db.Integer,  primary_key=True, 
      autoincrement=True)
@@ -185,4 +186,5 @@ class Recipes(db.Model):
 
     @staticmethod
     def get_all_recipes():
+        """method to get all recipes from the database"""
         return Recipes.query.all()

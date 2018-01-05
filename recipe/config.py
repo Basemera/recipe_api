@@ -1,9 +1,4 @@
-#instance/config.py
 import os
-#from sqlalchemy import SQLALCHEMY_DATABASE_URI
-# from sqlalchemy.orm import scoped_session, sessionmaker
-
-# SQLALCHEMY_DATABASE_URI = ""
 
 class Config(object):
     """Parent configuration class."""
@@ -11,7 +6,6 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    #global SQLALCHEMY_DATABASE_URI
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres@localhost:5432/recipe_api'
 
     @staticmethod
@@ -37,10 +31,6 @@ class ProductionConfig(Config):
     """Configurations for Production."""
     DEBUG = False
     TESTING = False
-
-# Session = sessionmaker()
-#engine = create_engine(SQLALCHEMY_DATABASE_URI)
-# Session.configure(bind=engine)
 
 app_config = {
     'development': DevelopmentConfig,
