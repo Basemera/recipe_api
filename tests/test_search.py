@@ -21,7 +21,7 @@ class TestSearchTestCase(BaseTestCase):
             resp = self.client.post('/category',
                                     headers=h, data=self.category)
             search = self.client.get(
-                '/1/recipes/search?q=fish&per_page=2&page=1',
+                '/category/search?q=fish&per_page=2&page=1',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)         
@@ -155,7 +155,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             response = self.client.post('/1/recipes',
                                         headers=h, data=self.recipe)
             search = self.client.get(
-                '/recipes/search?q=fried&per_page=2&page=1&category=1',
+                '/1/recipes/search?q=fried&per_page=2&page=1',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 404)
@@ -173,50 +173,13 @@ class TestRecipeSearchTestCase(BaseTestCase):
             response = self.client.post('/recipe',
                                         headers=h, data=self.recipe)
             search = self.client.get(
-                '/recipes/search?q=&per_page=k&page=1&category=1',
+                '/1/recipes/search?q=&per_page=k&page=1',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 400)
             self.assertEqual(result['message'], 'search item not provided')
 
-    def test_search_no_category_provided(self):
-        with self.client:
-            user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data=self.data2)
-            result = json.loads(logged_in.data)
-            auth = result['token']
-            h = Headers()
-            h.add('x-access-token', auth)
-            resp = self.client.post('/category',
-                                    headers=h, data=self.category)
-            response = self.client.post('/recipe',
-                                        headers=h, data=self.recipe)
-            search = self.client.get(
-                '/recipes/search?q=p&per_page=k&page=1',
-                headers=h)
-            result = json.loads(search.data)
-            self.assertEqual(search.status_code, 400)
-            self.assertEqual(result['message'], 'category not provided')
-    def test_search_category_provided_is_not_interger(self):
-        with self.client:
-            user = self.client.post('/user', data=self.user)
-            logged_in = self.client.post('/login', data=self.data2)
-            result = json.loads(logged_in.data)
-            auth = result['token']
-            h = Headers()
-            h.add('x-access-token', auth)
-            resp = self.client.post('/category',
-                                    headers=h, data=self.category)
-            response = self.client.post('/recipe',
-                                        headers=h, data=self.recipe)
-            search = self.client.get(
-                '/recipes/search?q=p&per_page=k&page=1&category=',
-                headers=h)
-            result = json.loads(search.data)
-            self.assertEqual(search.status_code, 400)
-            self.assertEqual(
-                result['message'],
-                {'category': "invalid literal for int() with base 10: ''"})
+    
     def test_get_all_recipes_for_a_user(self):
         with self.client:
             user = self.client.post('/user', data=self.user)
@@ -245,7 +208,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             recipe = self.client.post('/1/recipes',
                                       headers=h, data=self.recipe)
             search = self.client.get(
-                '/recipes/search?q=stew&per_page=2&page=k&category=1',
+                '/1/recipes/search?q=stew&per_page=2&page=k',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
@@ -262,7 +225,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             recipe = self.client.post('/1/recipes',
                                     headers = h, data = self.recipe)
             search = self.client.get(
-                '/recipes/search?q=stew&per_page=2&category=1&page=',
+                '/1/recipes/search?q=stew&per_page=2&page=',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
@@ -279,7 +242,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             recipe = self.client.post('/1/recipes',
                                       headers=h, data=self.recipe)
             search = self.client.get(
-                '/recipes/search?q=stew&per_page=k&page=1&category=1',
+                '/1/recipes/search?q=stew&per_page=k&page=1',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
@@ -297,7 +260,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
             recipe = self.client.post('/1/recipes',
                                       headers=h, data=self.recipe)
             search = self.client.get(
-                '/recipes/search?q=stew&per_page=&page=1&category=1',
+                '/1/recipes/search?q=stew&per_page=&page=1',
                 headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
