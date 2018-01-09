@@ -1,14 +1,10 @@
 import re
-from flask import Flask, request, jsonify, g, json, abort, make_response
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, jsonify, make_response, Blueprint
 from flask_restful import reqparse, Resource, Api, marshal_with, fields
-from flask import abort, g, jsonify, Blueprint
-from functools import wraps
-from recipe import app, db
-from . import recipe
+from recipe import db
 from recipe.models import RecipeCategory, User, Recipes
-from recipe.helpers import value_is_empty, login_required, valuess_is_empty
-
+from recipe.helpers import value_is_empty, login_required, valuess_is_empty, is_category_name_valid
+from . import recipe
 
 api_recipe = Api(recipe)
 resource_fields = {'recipe_name':fields.String,
@@ -38,13 +34,17 @@ class Addrecipe(Resource):
         args = parser.parse_args()
         if valuess_is_empty(args):
             return {'error': 'all fields must be filled'}, 422
-        recipe_name = args['recipe_name'].lower()
+        recipes = args['recipe_name'].lower()
         description = args['description']
-        if not is_recipe_name_valid(recipe_name):
+        recipe_name = recipes.strip()
+        if recipes.isspace() or recipes!=recipes.strip():
+            return ({'message':'no spaces allowed'})
+        if not is_category_name_valid(recipes):
             return {'message':'invalid input use format peas'}, 400
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
-        categories = RecipeCategory.query.filter_by(category_id=category, user=userid).first()
+        categories = RecipeCategory.query.filter_by(category_id=category,
+                                                    user=userid).first()
         if categories:
             recipes = Recipes.query.filter_by(
                 user = userid,
@@ -56,14 +56,13 @@ class Addrecipe(Resource):
                 user = userid
                 new_recipe = Recipes(recipe_name, description, user, category)
                 new_recipe.save_recipe()
-                response = jsonify({'message': 'recipe successfully added',
-                                    "category_id":new_recipe.category})
-                return response
-
+                response = {'message': 'recipe successfully added',
+                                    "category_id":new_recipe.category, 'recipe name':new_recipe.recipe_name}
+                return make_response(jsonify(response), 201)
             else:
-
                 return ({"message": "Recipe already exists"}), 409
-        return ({'message':'invalid category'})
+        return ({'message':'invalid category'}), 404
+
 class getrecipes(Resource):
     """A resource to handle searching of recipes"""
     @login_required
@@ -77,9 +76,9 @@ class getrecipes(Resource):
             return ({"message":"category doesnot exist"})
         recipes = Recipes.query.filter_by(user=userid, category=category).all()
         if recipes is None:
-            return jsonify({'message':'no recipes to display'})
+            return jsonify({'message':'no recipes to display'}), 404
         else:
-            return recipes
+            return recipes, 200
 
 
 class editrecipe(Resource):
@@ -95,20 +94,26 @@ class editrecipe(Resource):
         description = args['description']
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
-        
+        if recipe_name.isspace() or recipe_name!=recipe_name.strip():
+            return ({'message':'no spaces allowed'})
+        if not is_category_name_valid(recipe_name):
+            return {'message':'invalid input use format peas'}, 400
         recipes = Recipes.query.filter_by(recipe_id = recipe_id).first()
         if recipes is not None:
-            category = RecipeCategory.query.filter_by(category_id=recipes.category, user=userid).first()
+            category = RecipeCategory.query.filter_by(
+                category_id=recipes.category,
+                user=userid).first()
             if not category:
-                return ({"message":"category doesnot exist"})
-            recipe2 = Recipes.query.filter_by(recipe_name = recipe_name).first()
+                return ({"message":"category doesnot exist"}), 404
+            recipe2 = Recipes.query.filter_by(
+                recipe_name = recipe_name).first()
             if recipe2 is None:
                 recipe.recipe_name = recipe_name
                 recipe.description = description
                 db.session.commit()
                 return ({'recipe name':recipe.recipe_name,
                         'description':recipe.description})
-            return ({ 'message':'Recipe name already exists'})
+            return ({ 'message':'Recipe name already exists'}), 400
         return ({'message':'recipe doesnot exist'}), 404
 
 class delete(Resource):
@@ -116,8 +121,8 @@ class delete(Resource):
         """Function to delete a recipe"""
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
-        recipe = Recipes.query.filter_by(user=userid, category=category, recipe_id =recipe_id).first()
-
+        recipe = Recipes.query.filter_by(
+            user=userid, category=category, recipe_id =recipe_id).first()
         if recipe is None:
             return ({'message':'recipe doesnot exist'}, 404)
         db.session.delete(recipe)
@@ -130,22 +135,18 @@ class delete(Resource):
 class search(Resource):
     """A resource to handle searching of recipes"""
     @login_required
-    def get(self):
+    def get(self, category):
         """A function to get recipes"""
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
         parser = reqparse.RequestParser()
-        parser.add_argument('category', type = int)
         parser.add_argument('q', type = str)
         parser.add_argument('per_page', default=2)
         parser.add_argument('page', default=1)
         args = parser.parse_args()
-        category = args['category']
         q = args['q']
         per_page = args['per_page']
         page = args['page']
-        if not category:
-            return ({'message':'category not provided'}), 400
         if not q:
             return ({"message":"search item not provided"}), 400
 
@@ -153,7 +154,10 @@ class search(Resource):
             page =1
             per_page=2
         
-        recipe_search_query = Recipes.query.filter(Recipes.recipe_name.ilike('%' + q + '%')).filter_by(user=userid, category=category).paginate(per_page=10, page=1, error_out=False)
+        recipe_search_query = Recipes.query.filter(
+            Recipes.recipe_name.ilike('%' + q + '%')).filter_by(
+                user=userid, category=category).paginate(
+                    per_page=10, page=1, error_out=False)
         if recipe_search_query:
             results = []
             for item in recipe_search_query.items:
@@ -163,15 +167,13 @@ class search(Resource):
                     "items_returned": recipe_search_query.total
                 }
                 results.append(recipe_obj)
-            return make_response(jsonify(results), 200)
+        if results:
+            return results, 200
         return ({"message":"search item not found"}), 404
 
 
 api_recipe.add_resource(Addrecipe, '/<category>/recipes')
 api_recipe.add_resource(getrecipes, '/<category>/recipe')
 api_recipe.add_resource(editrecipe, '/recipes/<recipe_id>')
-api_recipe.add_resource(delete, '/recipe/<category>/<recipe_id>')# /categories/<category_id>/recipes/<recipe_id>
-api_recipe.add_resource(search, '/recipes/search')
-
-app.register_blueprint(recipe)
-
+api_recipe.add_resource(delete, '/recipe/<category>/<recipe_id>')
+api_recipe.add_resource(search, '/<category>/recipes/search')

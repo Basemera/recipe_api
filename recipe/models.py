@@ -1,8 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from . import db
-#from app.app import api, app, db, session
 from flask import abort, g, jsonify
-#       from flask_httpauth import HTTPBasicAuth
 from flask_httpauth import HTTPBasicAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
@@ -115,7 +113,7 @@ class RecipeCategory(db.Model):
     datemodified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
-    user = db.Column(db.Integer, db.ForeignKey(User.userid))
+    user = db.Column(db.Integer, db.ForeignKey(User.userid, ondelete="CASCADE"))
     recipes = db.relationship('Recipes', backref='categories', 
     lazy='dynamic')
     
@@ -151,7 +149,7 @@ class RecipeCategory(db.Model):
 class Recipes(db.Model):
     """Recipes model This class represents the recipe category model"""
     __tablename__ = 'recipes'
-    recipe_id = db.Column(db.Integer,  primary_key=True, autoincrement=True)
+    recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_name = db.Column('name', db.String(250), nullable=False, index=True)
     description = db.Column('description', db.String(
         250), nullable=False, index=True)
@@ -159,9 +157,9 @@ class Recipes(db.Model):
     datemodified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
-    user = db.Column('userid', db.Integer, db.ForeignKey(User.userid))
+    user = db.Column('userid', db.Integer, db.ForeignKey(User.userid, ondelete="CASCADE"))
     category = db.Column('category_id', db.Integer,
-                         db.ForeignKey(RecipeCategory.category_id))
+                         db.ForeignKey(RecipeCategory.category_id, ondelete="CASCADE"))
 
     def __init__(self, recipe_name, description, user, category):
         """initialise the class"""
@@ -180,7 +178,6 @@ class Recipes(db.Model):
 
     def delete_recipe(self):
         """method to delete a recipe from the database"""
-        
         db.session.delete(self)
         db.session.commit()
 
@@ -188,3 +185,29 @@ class Recipes(db.Model):
     def get_all_recipes():
         """method to get all recipes from the database"""
         return Recipes.query.all()
+
+class Blacklist(db.Model):
+    """Blacklist model This class represents the blacklist model"""
+    __tablename__ = 'blacklist'
+    number = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    datecreated = db.Column(db.DateTime, default=db.func.current_timestamp())
+    userid = db.Column('userid', db.Integer, nullable=False, index=True)
+    blacklist_token = db.Column('blacklist', db.String, nullable=False, index=True, unique=True)
+
+    def __init__(self, userid, blacklist_token):
+        """initialise the class"""
+        self.userid = userid
+        self.blacklist_token = blacklist_token
+
+    def __repr__(self):
+        return "<Recipe %r>" % (self.name)
+
+    def save_token(self):
+        """method to save a token to the blacklist table"""
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_recipe(self):
+        """method to delete a token from the blacklist table"""
+        db.session.delete(self)
+        db.session.commit()
