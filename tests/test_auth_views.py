@@ -37,15 +37,15 @@ class TestUserAuthenticationTestCase(BaseTestCase):
             self.assertEqual(responses.status_code, 401)
             self.assertEqual(result['message'], 'user doesnot exist')
 
-    # def test_log_out(self):
-    #     with self.client:
-    #         register_user = self.client.post('/register', data=self.user)
-    #         log_in = self.client.post('/login', data=self.data2)
-    #         results = json.loads(log_in.data.decode())
-    #         auth = results['token']
-    #         h = Headers()
-    #         h.add('x-access-token', auth)
-    #         response = self.client.post('/logout', headers=h)
-    #         result = json.loads(response.data.decode())
-    #         self.assertEqual(response.status_code, 200)
-    #         self.assertEqual(result['message'], 'logged out')
+    def test_log_out(self):
+        with self.client:
+            register_user = self.client.post('/register', data=self.user)
+            log_in = self.client.post('/login', data=self.data2)
+            results = json.loads(log_in.data.decode())
+            auth = results['token']
+            h = Headers()
+            h.add('x-access-token', auth)
+            response = self.client.post('/logout', headers=h)
+            result = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(result['message'], 'logged out')

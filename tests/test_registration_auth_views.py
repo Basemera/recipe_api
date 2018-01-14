@@ -89,7 +89,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response1 = self.client.post('/register', data=data1)
 			result = json.loads(response1.data)
 			self.assertEqual(response1.status_code, 400)
-			self.assertEqual(result['confirm_password'], 'passwords do not match')
+			self.assertEqual(result['confirm_password'], 
+									'passwords do not match')
 	def test_user_already_exists(self):
 			payload = json.dumps(self.user)
 			h = Headers()
@@ -109,7 +110,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['username'], 'invalid username cannot begin with numbers')
+			self.assertEqual(results['username'], 
+							'invalid username cannot begin with numbers')
 	def test_username_not_provided(self):
 			data = {
 					'email':'bb@c.com',
@@ -120,7 +122,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['message'], {'username': 'username cannot be empty'})
+			self.assertEqual(results['message'], 
+							{'username': 'username cannot be empty'})
 	def test_firstname_not_valid(self):
 			data = {'username':'phiona',
 					'email':'bb@c.com',
@@ -131,7 +134,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['firstname'], 'invalid firstname cannot have numbers')
+			self.assertEqual(results['firstname'], 
+							'invalid firstname cannot have numbers')
 
 	def test_firstname_not_provided(self):
 			data = {'username':'phiona',
@@ -142,7 +146,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['message'], {'firstname': 'firstname must be a string'})
+			self.assertEqual(results['message'], 
+							{'firstname': 'firstname must be a string'})
 	def test_passwords_do_not_match(self):
 			data = {'username':'phiona',
 					'email':'bb@c.com',
@@ -154,7 +159,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['confirm_password'], 'passwords do not match')
+			self.assertEqual(results['confirm_password'], 
+							'passwords do not match')
 	def test_email_not_valid(self):
 			data = {'username':'phiona',
 					'email':'bb@@c.com',
@@ -176,7 +182,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['message'], {'email': 'email not provided'})
+			self.assertEqual(results['message'], 
+							{'email': 'email not provided'})
 	def test_password_not_provided(self):
 			data = {'username':'phiona',
 					'firstname':'phiona',
@@ -186,7 +193,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['message'], {'password': 'password cannot be empty'})
+			self.assertEqual(results['message'], 
+							{'password': 'password cannot be empty'})
 	def test_password_less_than_9_characters(self):
 			data = {'username':'phiona',
 					'firstname':'phiona',
@@ -198,7 +206,8 @@ class TestUsermodelTestCase(BaseTestCase):
 			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			self.assertEqual(results['password'], 'password must be more than 8 characters')
+			self.assertEqual(results['password'], 
+							'password must be more than 8 characters')
 
            
                 

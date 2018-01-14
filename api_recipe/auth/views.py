@@ -131,7 +131,7 @@ class Logout(Resource):
         userid = User.verify_auth_token(authorisation)
         if not authorisation:
             return ({"message":"You are not logged in"}), 400
-        blacklist=Blacklist(userid, auth)
+        blacklist=Blacklist(userid, authorisation)
         blacklist.save_token()
         return ({'message':'logged out'}), 200
 
@@ -139,4 +139,3 @@ class Logout(Resource):
 api.add_resource(AddUser, '/register')  # , endpoint = "add_user"
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
-# app.register_blueprint(autho)

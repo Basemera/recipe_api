@@ -14,9 +14,6 @@ from api_recipe import create_app
 
 
 class TestDevelopmentConfig(TestCase):
-
-
-    # config_name = 'testing'
     def create_app(self):
         app = FlaskAPI(__name__, instance_relative_config=True)
         app.config.from_object(app_config['development'])
@@ -29,8 +26,6 @@ class TestDevelopmentConfig(TestCase):
         app.register_blueprint(autho)
         app.register_blueprint(category)
         app.register_blueprint(recipe)
-        # api.add_resource(AddUser, "/auth/register", endpoint = "add_user")
-
         return app
 
     def setUp(self):
@@ -47,7 +42,6 @@ class TestDevelopmentConfig(TestCase):
 
 #
 class TestTestingConfig(TestCase):
-    # config_name = 'testing'
     def create_app(self):
         app = FlaskAPI(__name__, instance_relative_config=True)
         app.config.from_object(app_config['testing'])
@@ -63,7 +57,6 @@ class TestTestingConfig(TestCase):
         return app
     def setUp(self):
         self.app = create_app('testing')
-
     def test_app_is_testing(self):
         key = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'
         print (self.app.config['TESTING'])
@@ -77,10 +70,6 @@ class TestTestingConfig(TestCase):
 
 
 class TestProductionConfig(TestCase):
-    db = SQLAlchemy()
-    api = Api()
-
-    # config_name = 'testing'
     def create_app(self):
         app = FlaskAPI(__name__, instance_relative_config=True)
         app.config.from_object(app_config['production'])
@@ -104,10 +93,6 @@ class TestProductionConfig(TestCase):
         self.assertFalse(self.app.config['TESTING'] == True)
 
 class TestStagingConfig(TestCase):
-    db = SQLAlchemy()
-    api = Api()
-
-    # config_name = 'testing'
     def create_app(self):
         app = FlaskAPI(__name__, instance_relative_config=True)
         app.config.from_object(app_config['staging'])

@@ -37,7 +37,7 @@ class TestCategoriesTestCase(BaseTestCase):
             response = self.client.post('/category', 
                                         headers=h, data=self.category)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 401)
             self.assertEqual(result['message'], 'token is missing')
 
     def test_token_expired(self):
@@ -55,7 +55,7 @@ class TestCategoriesTestCase(BaseTestCase):
             response = self.client.post('/category', 
                                         headers=h, data=self.category)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 401)
             self.assertEqual(result['message'], 'token has expired')
 
     def test_invalid_token(self):
@@ -69,7 +69,7 @@ class TestCategoriesTestCase(BaseTestCase):
             response = self.client.post('/category',
                                         headers=h, data=self.category)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 401)
             self.assertEqual(result['message'], 'Invalid token')
 
     def test_creating_duplicate_category(self):
