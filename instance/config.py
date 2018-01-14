@@ -8,9 +8,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres@localhost:5432/recipe_api'
 
-    @staticmethod
-    def init_app(app):
-        pass
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
