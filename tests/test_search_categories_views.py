@@ -35,7 +35,8 @@ class TestSearchTestCase(BaseTestCase):
             h.add('x-access-token', auth)
             resp = self.client.post('/category',
                                     headers=h, data=self.category)
-            search = self.client.get('/category/search?q=peas&per_page=2&page=1',
+            search = self.client.get(
+                                '/category/search?q=peas&per_page=2&page=1',
                                      headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 404)
@@ -80,7 +81,8 @@ class TestSearchTestCase(BaseTestCase):
             h.add('x-access-token', auth)
             resp = self.client.post('/category',
                                     headers=h, data=self.category)
-            search = self.client.get('/category/search?q=fish&per_page=2&page=k',
+            search = self.client.get(
+                                '/category/search?q=fish&per_page=2&page=k',
                                     headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
@@ -94,7 +96,8 @@ class TestSearchTestCase(BaseTestCase):
             h.add('x-access-token', auth)
             resp = self.client.post('/category',
                                     headers=h, data=self.category)
-            search = self.client.get('/category/search?q=fish&per_page=&page=1',
+            search = self.client.get(
+                                '/category/search?q=fish&per_page=&page=1',
                                      headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
@@ -108,7 +111,8 @@ class TestSearchTestCase(BaseTestCase):
             h.add('x-access-token', auth)
             resp = self.client.post('/category',
                                     headers=h, data=self.category)
-            search = self.client.get('/category/search?q=fish&per_page=k&page=1',
+            search = self.client.get(
+                                '/category/search?q=fish&per_page=k&page=1',
                                      headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)

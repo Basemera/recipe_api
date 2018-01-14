@@ -8,9 +8,12 @@ class BaseTestCase(unittest.TestCase):
         self.app = create_app('testing')
         self.app.config.from_object("instance.config.TestingConfig")
         self.client = self.app.test_client()
-        self.user = {'username': 'Bas', 'email': 'bap@gmail.com', 'password':'phiona2017', 'firstname':'Phiona', 'confirm_password':'phiona2017'}
+        self.user = {'username': 'Bas', 'email': 'bap@gmail.com',
+             'password':'phiona2017', 
+             'firstname':'Phiona', 'confirm_password':'phiona2017'}
         self.category = {'category_name':'fish'}
-        self.recipe = {'recipe_name':"stew", 'description':"prepared with water"}
+        self.recipe = {'recipe_name':"stew", 
+                        'description':"prepared with water"}
         self.data2 ={'username':"Bas", "password":"phiona2017"}
     
         with self.app.app_context():
