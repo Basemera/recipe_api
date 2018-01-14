@@ -34,7 +34,7 @@ class TestRecipesTestCase(BaseTestCase):
             category = self.client.post('/category', headers=h, data=self.category)
             responses = self.client.post('/1/recipes', headers=h, data=self.recipe)
             result = json.loads(responses.data)
-            self.assertEqual(responses.status_code, 200)
+            self.assertEqual(responses.status_code, 401)
             self.assertEqual(result['message'], 'token is missing')
  
     def test_token_expired(self):
@@ -54,7 +54,7 @@ class TestRecipesTestCase(BaseTestCase):
             response = self.client.post('/1/recipes',
                                         headers=h, data=self.recipe)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 401)
             self.assertEqual(result['message'], 'token has expired')
 
 
@@ -72,7 +72,7 @@ class TestRecipesTestCase(BaseTestCase):
             response = self.client.post('/1/recipes',
                                         headers=h, data=self.recipe)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 401)
             self.assertEqual(result['message'], 'Invalid token')
 
     def test_duplicate_recipe(self):
@@ -122,7 +122,7 @@ class TestRecipesTestCase(BaseTestCase):
                                         headers=h, data=self.category)
             responses = self.client.post('/1/recipes',
                                          headers=h, data=self.recipe)
-            response = self.client.get('/1/recipe', headers=h)
+            response = self.client.get('/1/recipes', headers=h)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 200)
             self.assertIn('stew', str(result))
@@ -197,7 +197,7 @@ class TestRecipesTestCase(BaseTestCase):
                                         headers=h, data=self.category)
             recipe = self.client.post('/1/recipes',
                                       headers=h, data=self.recipe)
-            response = self.client.delete('/recipe/1/1', headers=h)
+            response = self.client.delete('/recipes/1/1', headers=h)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(result['message'], 'recipe successfully deleted')
@@ -214,7 +214,7 @@ class TestRecipesTestCase(BaseTestCase):
                                         headers=h, data=self.category)
             created_recipe = self.client.post('/1/recipes',
                                             headers=h, data=self.recipe)
-            response = self.client.delete('/recipe/1/3', headers=h)
+            response = self.client.delete('/recipes/1/3', headers=h)
             result = json.loads(response.data)
             self.assertEqual(response.status_code, 404)
             self.assertEqual(result['message'], 'recipe doesnot exist')

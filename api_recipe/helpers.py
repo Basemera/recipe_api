@@ -1,6 +1,6 @@
 import re
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from .models import User, Blacklist, Serializer, SignatureExpired, BadSignature, secret_key
 
 def values_is_empty(args):
@@ -47,15 +47,18 @@ def login_required(f):
                 return ({'message':"you are logged out"})
 
         if not token:
-            return jsonify({'message': 'token is missing'})
+            response = {'message':'token is missing'}, 401
+            return make_response(response)
         
         s = Serializer(secret_key)
         try:
             data = s.loads(token)
         except SignatureExpired:
-            return jsonify({'message': 'token has expired'})
+            response = {'message':'token has expired'}, 401
+            return make_response(response)
         except BadSignature:
-            return jsonify({'message': 'Invalid token'})
+            response = {'message':'Invalid token'}, 401
+            return make_response(response)
         users = data['userid']
         user = User.query.filter_by(userid = data['userid']).first()
         return f(*args, **kwargs)

@@ -23,7 +23,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
                                     headers=h, data=self.category)
             response = self.client.post('/1/recipes',
                                         headers=h, data=self.recipe)
-            search = self.client.get('/1/recipe', headers=h)
+            search = self.client.get('/1/recipes', headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
     def test_search_none_existing_recipe(self):
@@ -76,7 +76,7 @@ class TestRecipeSearchTestCase(BaseTestCase):
                                     headers=h, data=self.category)
             response = self.client.post('/1/recipes',
                                         headers=h, data=self.recipe)
-            search = self.client.get('/1/recipe', headers=h)
+            search = self.client.get('/1/recipes', headers=h)
             result = json.loads(search.data)
             self.assertEqual(search.status_code, 200)
     def test_page_parameter_provided_is_string(self):

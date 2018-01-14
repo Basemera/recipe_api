@@ -139,4 +139,3 @@ class Logout(Resource):
 api.add_resource(AddUser, '/register')  # , endpoint = "add_user"
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
-# app.register_blueprint(autho)
