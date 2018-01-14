@@ -156,8 +156,7 @@ class search(Resource):
         
         recipe_search_query = Recipes.query.filter(
             Recipes.recipe_name.ilike('%' + q + '%')).filter_by(
-                user=userid, category=category).paginate(
-                    per_page=10, page=1, error_out=False)
+                user=userid, category=category).paginate(error_out=False)
         if recipe_search_query:
             results = []
             for item in recipe_search_query.items:

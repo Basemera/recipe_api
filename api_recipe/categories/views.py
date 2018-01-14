@@ -111,24 +111,43 @@ class search(Resource):
         page = args['page'] 
         if not q:
             return ({"message":"search item not provided"}), 400
-        if page or per_page:
-            recipe_search_query = RecipeCategory.query.filter(
-                RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(
-                    user=userid).paginate(error_out=False)
-            if recipe_search_query:
-                for item in recipe_search_query.items:
-                    cat_obj = {
-                        "name": item.category_name,
-                        'id': item.category_id,
-                        "page_number": recipe_search_query.page,
-                        "items_returned": recipe_search_query.total
-                    }
-                    results = []
-                    results.append(cat_obj)
-                    return make_response(jsonify(results),200)
-            return ({"message":"search item not found"}), 404
-        page =1
-        per_page=2
+        if page and per_page is None:
+            page =1
+            per_page=2
+        
+        category_search_query = RecipeCategory.query.filter(
+            RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(
+                user=userid).paginate(error_out=False)
+        if category_search_query:
+            results = []
+            for item in category_search_query.items:
+                recipe_obj = {
+                    "name": item.category_name,
+                    "page_number": category_search_query.page,
+                    "items_returned": category_search_query.total
+                }
+                results.append(recipe_obj)
+        if results:
+            return results, 200
+        return ({"message":"search item not found"}), 404
+        # if page or per_page:
+        #     recipe_search_query = RecipeCategory.query.filter(
+        #         RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(
+        #             user=userid).paginate(error_out=False)
+        #     if recipe_search_query:
+        #         for item in recipe_search_query.items:
+        #             cat_obj = {
+        #                 "name": item.category_name,
+        #                 'id': item.category_id,
+        #                 "page_number": recipe_search_query.page,
+        #                 "items_returned": recipe_search_query.total
+        #             }
+        #             results = []
+        #             results.append(cat_obj)
+        #             return make_response(jsonify(results),200)
+        #     return ({"message":"search item not found"}), 404
+        # page =1
+        # per_page=2
 
 
 api_category.add_resource(Addcategory, '/category')
