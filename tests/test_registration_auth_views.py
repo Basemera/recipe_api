@@ -2,9 +2,9 @@ import unittest
 import json
 from flask import jsonify, json
 from flask_testing import TestCase
-from recipe import db
-from recipe.models import User
-from recipe.auth.views import AddUser, api
+from api_recipe import db
+from api_recipe.models import User
+from api_recipe.auth.views import AddUser, api
 from werkzeug.datastructures import Headers
 from tests.base import BaseTestCase
 
@@ -14,9 +14,8 @@ class TestUsermodelTestCase(BaseTestCase):
 	def test_user_registration(self):
 			h = Headers()
 			h.add('Content-Type', 'application/json')
-			response = self.client.post('/user', data=self.user)
+			response = self.client.post('/register', data=self.user)
 			result= json.loads(response.data)
-			print (result)
 			self.assertEqual(response.status_code, 201)
 			self.assertIn('bap@gmail.com', str(result))
 
@@ -30,7 +29,7 @@ class TestUsermodelTestCase(BaseTestCase):
 			payload = json.dumps(data1)
 			h = Headers()
 			h.add('Content-Type', 'application/json')
-			response1 = self.client.post('/user', data=data1)
+			response1 = self.client.post('/register', data=data1)
 			result = json.loads(response1.data)
 			self.assertEqual(response1.status_code, 400)
 			self.assertEqual(result['error'], 'all fields must be filled')
@@ -45,7 +44,7 @@ class TestUsermodelTestCase(BaseTestCase):
 			payload = json.dumps(data1)
 			h = Headers()
 			h.add('Content-Type', 'application/json')
-			response1 = self.client.post('/user', data=data1)
+			response1 = self.client.post('/register', data=data1)
 			result = json.loads(response1.data)
 			self.assertEqual(response1.status_code, 400)
 			self.assertEqual(result['error'], 'all fields must be filled')
@@ -59,7 +58,7 @@ class TestUsermodelTestCase(BaseTestCase):
 			payload = json.dumps(data1)
 			h = Headers()
 			h.add('Content-Type', 'application/json')
-			response1 = self.client.post('/user', data=data1)
+			response1 = self.client.post('/register', data=data1)
 			result = json.loads(response1.data)
 			self.assertEqual(response1.status_code, 400)
 			self.assertEqual(result['error'], 'all fields must be filled')
@@ -73,7 +72,7 @@ class TestUsermodelTestCase(BaseTestCase):
 			payload = json.dumps(data1)
 			h = Headers()
 			h.add('Content-Type', 'application/json')
-			response1 = self.client.post('/user', data=data1)
+			response1 = self.client.post('/register', data=data1)
 			result = json.loads(response1.data)
 			self.assertEqual(response1.status_code, 400)
 			self.assertEqual(result['error'], 'all fields must be filled')
@@ -87,7 +86,7 @@ class TestUsermodelTestCase(BaseTestCase):
 			payload = json.dumps(data1)
 			h = Headers()
 			h.add('Content-Type', 'application/json')
-			response1 = self.client.post('/user', data=data1)
+			response1 = self.client.post('/register', data=data1)
 			result = json.loads(response1.data)
 			self.assertEqual(response1.status_code, 400)
 			self.assertEqual(result['confirm_password'], 'passwords do not match')
@@ -95,11 +94,10 @@ class TestUsermodelTestCase(BaseTestCase):
 			payload = json.dumps(self.user)
 			h = Headers()
 			h.add('Content-Type', 'application/json')  
-			user = self.client.post('/user', data=self.user)
-			response = self.client.post('/user', data=self.user)
+			user = self.client.post('/register', data=self.user)
+			response = self.client.post('/register', data=self.user)
 			results=json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
-			print (results)
 			self.assertEqual(results['error'],'User already exists')
 	def test_username_not_valid(self):
 			data = {'username':1234,
@@ -108,7 +106,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'firstname':'Second',
 					'confirm_password':'87654321'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['username'], 'invalid username cannot begin with numbers')
@@ -119,7 +117,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'firstname':'Second',
 					'confirm_password':'87654321'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['message'], {'username': 'username cannot be empty'})
@@ -130,7 +128,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'firstname':'1234',
 					'confirm_password':'87654321'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['firstname'], 'invalid firstname cannot have numbers')
@@ -141,7 +139,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'password':'87654321',
 					'confirm_password':'87654321'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['message'], {'firstname': 'firstname must be a string'})
@@ -153,9 +151,8 @@ class TestUsermodelTestCase(BaseTestCase):
 					'confirm_password':'car'
 					
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
-			print (results)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['confirm_password'], 'passwords do not match')
 	def test_email_not_valid(self):
@@ -165,7 +162,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'firstname':'phiona',
 					'confirm_password':'87654321'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['email'], 'invalid email')
@@ -176,7 +173,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'firstname':'phiona',
 					'lastname':'basem'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['message'], {'email': 'email not provided'})
@@ -186,7 +183,7 @@ class TestUsermodelTestCase(BaseTestCase):
 					'lastname':'basem',
 					'email':'basp@yaho.com'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['message'], {'password': 'password cannot be empty'})
@@ -198,9 +195,8 @@ class TestUsermodelTestCase(BaseTestCase):
 					'email':'basp@yaho.com',
 					'confirm_password':'car'
 			}
-			response = self.client.post('/user', data=data)
+			response = self.client.post('/register', data=data)
 			results = json.loads(response.data)
-			print (results)
 			self.assertEqual(response.status_code, 400)
 			self.assertEqual(results['password'], 'password must be more than 8 characters')
 

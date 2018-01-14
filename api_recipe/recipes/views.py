@@ -1,9 +1,9 @@
 import re
 from flask import request, jsonify, make_response, Blueprint
 from flask_restful import reqparse, Resource, Api, marshal_with, fields
-from recipe import db
-from recipe.models import RecipeCategory, User, Recipes
-from recipe.helpers import value_is_empty, login_required, valuess_is_empty, is_category_name_valid
+from api_recipe import db
+from api_recipe.models import RecipeCategory, User, Recipes
+from api_recipe.helpers import value_is_empty, login_required, valuess_is_empty, is_category_name_valid
 from . import recipe
 
 api_recipe = Api(recipe)

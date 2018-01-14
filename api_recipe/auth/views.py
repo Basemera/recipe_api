@@ -3,9 +3,9 @@ from flask import request, jsonify, g, make_response
 from sqlalchemy import exc
 from flask_restful import reqparse, Resource, Api
 from flask_httpauth import HTTPBasicAuth
-from recipe import create_app
-from recipe.helpers import values_is_empty, login_required
-from recipe.models import User, Blacklist, secret_key, auth 
+from api_recipe import create_app
+from api_recipe.helpers import values_is_empty, login_required
+from api_recipe.models import User, Blacklist, secret_key, auth
 from . import autho
 
 api = Api(autho)
@@ -136,7 +136,7 @@ class Logout(Resource):
         return ({'message':'logged out'}), 200
 
 
-api.add_resource(AddUser, '/user')  # , endpoint = "add_user"
+api.add_resource(AddUser, '/register')  # , endpoint = "add_user"
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 # app.register_blueprint(autho)

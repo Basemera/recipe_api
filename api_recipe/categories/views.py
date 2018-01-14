@@ -1,8 +1,8 @@
 from flask import request, jsonify, make_response
 from flask_restful import reqparse, Resource, Api, marshal_with, fields
-from recipe import db
-from recipe.models import User, RecipeCategory
-from recipe.helpers import value_is_empty, login_required, is_category_name_valid
+from api_recipe import db
+from api_recipe.models import User, RecipeCategory
+from api_recipe.helpers import value_is_empty, login_required, is_category_name_valid
 from . import category
 
 api_category = Api(category)
@@ -114,7 +114,7 @@ class search(Resource):
         if page or per_page:
             recipe_search_query = RecipeCategory.query.filter(
                 RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(
-                    user=userid).paginate(per_page=10, page=1, error_out=False)
+                    user=userid).paginate(error_out=False)
             if recipe_search_query:
                 for item in recipe_search_query.items:
                     cat_obj = {
@@ -129,6 +129,7 @@ class search(Resource):
             return ({"message":"search item not found"}), 404
         page =1
         per_page=2
+
 
 api_category.add_resource(Addcategory, '/category')
 api_category.add_resource(search, '/category/search')

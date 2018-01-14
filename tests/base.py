@@ -1,5 +1,5 @@
 import unittest
-from recipe import  db, create_app
+from api_recipe import  db, create_app
 
 
 class BaseTestCase(unittest.TestCase):

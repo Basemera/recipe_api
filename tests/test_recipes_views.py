@@ -2,22 +2,20 @@ import unittest
 import json
 from flask import jsonify, json
 from flask_testing import TestCase
-from recipe import app, db
 from werkzeug.datastructures import Headers
 from tests.base import BaseTestCase
-from recipe.recipes.views import *
-from recipe.auth.views import AddUser, api
-from recipe.categories.views import Addcategory, api_category
+from api_recipe.recipes.views import *
+from api_recipe.auth.views import AddUser, api
+from api_recipe.categories.views import Addcategory, api_category
 
 
 class TestRecipesTestCase(BaseTestCase):
     def test_creating_recipes(self):
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
-            print(auth)
             h = Headers()
             h.add('x-access-token', auth)
             category = self.client.post('/category',
@@ -26,12 +24,12 @@ class TestRecipesTestCase(BaseTestCase):
             response = self.client.post('/1/recipes',
                                         headers=h, data=self.recipe)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 201)
             self.assertEqual(result['message'], 'recipe successfully added')
 
     def test_token_requirred(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             h = Headers()
             category = self.client.post('/category', headers=h, data=self.category)
             responses = self.client.post('/1/recipes', headers=h, data=self.recipe)
@@ -41,7 +39,7 @@ class TestRecipesTestCase(BaseTestCase):
  
     def test_token_expired(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             tok1 = 'eyJhbGciOiJIUzI1NiIsImlhdCI6MTUxN'
@@ -62,7 +60,7 @@ class TestRecipesTestCase(BaseTestCase):
 
     def test_token_expired(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = 'phiona'
@@ -79,7 +77,7 @@ class TestRecipesTestCase(BaseTestCase):
 
     def test_duplicate_recipe(self):
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -100,7 +98,7 @@ class TestRecipesTestCase(BaseTestCase):
     def test_empty_fields(self):
         data = {'recipe_name':'    ', 'description':'beefy'}
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -114,7 +112,7 @@ class TestRecipesTestCase(BaseTestCase):
 
     def test_get_all(self):
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -131,7 +129,7 @@ class TestRecipesTestCase(BaseTestCase):
 
     def test_duplicate_recipe(self):
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -150,7 +148,7 @@ class TestRecipesTestCase(BaseTestCase):
     def test_edit_recipe(self):
         data = {"recipe_name":'seafood', 'description':'Smoked over open fire'}
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -163,13 +161,13 @@ class TestRecipesTestCase(BaseTestCase):
             response = self.client.post('/1/recipes',
                                         headers=h, data=data)
             result = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 201)
 
 
     def test_edit_none_existantrecipe(self):
         data = {"recipe_name":'seafood', 'description':'Smoked over open fire'}
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -189,7 +187,7 @@ class TestRecipesTestCase(BaseTestCase):
     def test_delete_recipe(self):
         data = {"recipe_name":'seafood', 'description':'Smoked over open fire'}
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -206,7 +204,7 @@ class TestRecipesTestCase(BaseTestCase):
 
     def test_delete_nonexistantrecipe(self):
         with self.client:
-            user = self.client.post('/user', data=self.user)
+            user = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -225,7 +223,7 @@ class TestRecipesTestCase(BaseTestCase):
         data2 ={'username':"Bas", "password":"phiona"}
         data3 = {'recipe_name':1234, 'description':'boiled'}
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']

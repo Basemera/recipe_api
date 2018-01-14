@@ -3,10 +3,10 @@ import json
 from flask import jsonify, json
 from flask_testing import TestCase
 from itsdangerous import BadSignature, SignatureExpired
-from recipe import db
-from recipe.models import User
-from recipe.auth.views import AddUser, api
-from recipe.categories.views import Addcategory, api_category
+from api_recipe import db
+from api_recipe.models import User
+from api_recipe.auth.views import AddUser, api
+from api_recipe.categories.views import Addcategory, api_category
 from werkzeug.datastructures import Headers
 from base64 import b64encode
 from tests.base import BaseTestCase
@@ -15,7 +15,7 @@ class TestCategoriesTestCase(BaseTestCase):
     """testing creating categories"""
     def test_creating_categories(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -29,7 +29,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_token_requirred(self):  
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -42,7 +42,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_token_expired(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             tok1 = "eyJhbGciOiJIUzI1NiIsImlhdCI6MTUxNDU"
@@ -60,7 +60,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_invalid_token(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = 'phiona'
@@ -74,7 +74,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_creating_duplicate_category(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -91,7 +91,7 @@ class TestCategoriesTestCase(BaseTestCase):
     def test_empty_string_not_allowed(self):
         data3 = {'category_name':"     "}
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -107,7 +107,7 @@ class TestCategoriesTestCase(BaseTestCase):
     def test_edit_category(self):
         data3 = {'category_name':"seafood"}
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -125,7 +125,7 @@ class TestCategoriesTestCase(BaseTestCase):
     def test_edit_nonexistant_category(self):
         data3 = {'category_name':"lunch"}
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -142,7 +142,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_delete_category(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -158,7 +158,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_deleting_nonexistant_category(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -171,7 +171,7 @@ class TestCategoriesTestCase(BaseTestCase):
 
     def test_getting_all_categories(self):
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
@@ -186,7 +186,7 @@ class TestCategoriesTestCase(BaseTestCase):
     def test_validate_category_name(self):
         data3 = {'category_name':1234}
         with self.client:
-            response = self.client.post('/user', data=self.user)
+            response = self.client.post('/register', data=self.user)
             responses = self.client.post('/login', data=self.data2)
             result = json.loads(responses.data.decode())
             auth = result['token']
