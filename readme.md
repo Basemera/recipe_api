@@ -3,10 +3,10 @@
 
 The andela recipe api that allows users to create and manage their recipes.
 
-###Python Dependancy
+### Python Dependancy
 Python v3.6 used
 
-###Installation
+### Installation
 After cloning, create a virtual environment and install the requirements. For Linux and Mac users:
 ```
 $ virtualenv venv
@@ -19,10 +19,10 @@ $ virtualenv venv
 $ venv\Scripts\activate
 (venv) $ pip install -r requirements.txt
 ```
-###Database Setup
+### Database Setup
 Once installation is complete, we need to set up the postgres database.
 
-###Postgres installation
+### Postgres installation
 
 Use the OS link that applies to you, if it's not available please go to https://www.google.com
 
@@ -40,7 +40,7 @@ Use the OS link that applies to you, if it's not available please go to https://
 
 If you're more comfortable with a desktop application give this a shot https://www.postgresapp.com
 
-###Database Setup
+### Database Setup
 
 To set up the database, please follow this document https://www.codementor.io/devops/tutorial/getting-started-postgresql-server-mac-osx .
 
@@ -54,7 +54,7 @@ The following must be done with ALL the above steps completed. Execute these com
 5. python manage.py db migrate
 6. python manage.py db upgrade (5 and 6 must be run every time you make changes to the application models)
 
-###To get the application running
+### To get the application running
 
 1. To run the server use the following command:
 
@@ -73,13 +73,13 @@ source .env
  ```
 3. Then from a different terminal window you can send requests or an API test client like Postman.
 
-###Testing
+### Testing
 
 To run the application tests, use the following command:
 ```
 (recipe_api) $ py.test tests/
 ```
-###API Documentation
+### API Documentation
 Endpoint | Functionality | Access
 ------------ | ------------- | -------------
 POST /register | Register a new user | Public
