@@ -171,8 +171,8 @@ class search(Resource):
         return ({"message":"search item not found"}), 404
 
 
-api_recipe.add_resource(Addrecipe, '/<category>/recipes')
-api_recipe.add_resource(getrecipes, '/<category>/recipes')
-api_recipe.add_resource(editrecipe, '/recipes/<recipe_id>')
-api_recipe.add_resource(delete, '/recipes/<category>/<recipe_id>')
-api_recipe.add_resource(search, '/<category>/recipes/search')
+api_recipe.add_resource(Addrecipe, '/category/<category>/recipes')
+api_recipe.add_resource(getrecipes, '/category/<category>/recipes')
+api_recipe.add_resource(editrecipe, '/category/recipes/<recipe_id>') #category/recipes/<recipe_id>
+api_recipe.add_resource(delete, '/category/<category>/recipes/<recipe_id>') #<category>/recipes/<recipe_id>
+api_recipe.add_resource(search, '/category/<category>/recipes/search')
