@@ -114,10 +114,11 @@ class Login(Resource):
     """A resource that will allow users to login"""
     def post(self):
         """A function that will allow a user to log in"""
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str)
-        parser.add_argument('password', type=str)
-        args = parser.parse_args()
+        
+        username = request.data['username']
+        password = request.data['password']
+        # args = parser.parse_args()
+        args = {'username':username, 'password':password}
         username = args['username']
         password = args['password']
         users = User.query.filter_by(username=username).first()

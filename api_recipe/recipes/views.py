@@ -28,13 +28,16 @@ class Addrecipe(Resource):
     """Resource to handle creating recipes"""
     @login_required
     def post(self, category):
-        parser = reqparse.RequestParser()
-        parser.add_argument('recipe_name', type = str)
-        parser.add_argument('description', type = str, default='')
-        args = parser.parse_args()
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('recipe_name', type = str)
+        # parser.add_argument('description', type = str, default='')
+        recipe_name = request.data['recipe_name']
+        description = request.data['description']
+        args = {'recipe_name':recipe_name, 'description':description}
+        # args = pathis.props.match.paramsrser.parse_args()
         if valuess_is_empty(args):
             return {'error': 'all fields must be filled'}, 422
-        recipes = args['recipe_name'].lower()
+        recipes = args['recipe_name']
         description = args['description']
         recipe_name = recipes.strip()
         if recipes.isspace() or recipes!=recipes.strip():
@@ -86,18 +89,22 @@ class editrecipe(Resource):
     @login_required
     def put(self, recipe_id):
         """Function to edit a recipe"""
-        parser = reqparse.RequestParser()
-        parser.add_argument('recipe_name', type = str)
-        parser.add_argument('description', type = str)
-        args = parser.parse_args()
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('recipe_name', type = str)
+        # parser.add_argument('description', type = str)
+        recipe_name= request.data['recipe_name']
+        description= request.data['description']
+        args = {'recipe_name':recipe_name, 'description':description}
         recipe_name = args['recipe_name'].lower()
         description = args['description']
         auth = request.headers.get('x-access-token')
         userid = User.verify_auth_token(auth)
         if recipe_name.isspace() or recipe_name!=recipe_name.strip():
-            return ({'message':'no spaces allowed'})
+            return ({'message':'no spaces allowed'}), 400
         if not is_category_name_valid(recipe_name):
             return {'message':'invalid input use format peas'}, 400
+        if not recipe_name or not description:
+            return {'message':'all fields required'}, 400
         recipes = Recipes.query.filter_by(recipe_id = recipe_id).first()
         if recipes is not None:
             category = RecipeCategory.query.filter_by(
@@ -108,11 +115,14 @@ class editrecipe(Resource):
             recipe2 = Recipes.query.filter_by(
                 recipe_name = recipe_name).first()
             if recipe2 is None:
-                recipe.recipe_name = recipe_name
-                recipe.description = description
+                recipes.recipe_name = recipe_name
+                recipes.description = description
                 db.session.commit()
-                return ({'recipe name':recipe.recipe_name,
-                        'description':recipe.description})
+                return ({'recipe name':recipes.recipe_name,
+                        'description':recipes.description,
+                        'message':'Recipe successfully edited'
+                        }
+                        ), 200
             return ({ 'message':'Recipe name already exists'}), 400
         return ({'message':'recipe doesnot exist'}), 404
 
@@ -161,7 +171,7 @@ class search(Resource):
             results = []
             for item in recipe_search_query.items:
                 recipe_obj = {
-                    "name": item.recipe_name,
+                    "recipe_name": item.recipe_name,
                     "page_number": recipe_search_query.page,
                     "items_returned": recipe_search_query.total
                 }

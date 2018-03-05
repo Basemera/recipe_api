@@ -13,9 +13,11 @@ class Addcategory(Resource):
     @login_required
     def post(self):
         """A method to create a category"""
-        parser = reqparse.RequestParser()
-        parser.add_argument('category_name', type = str)
-        args = parser.parse_args()
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('category_name', type = str)
+        category_name = request.data['category_name']
+        args = {'category_name':category_name}
+        category_name = args['category_name']
         if value_is_empty(args):    
             return {'error': 'all fields must be filled'}, 422
         category_name = args['category_name']
@@ -55,9 +57,11 @@ class editcategory(Resource):
     @login_required
     def put(self, category_id):
         """Method for updating a category"""
-        parser = reqparse.RequestParser()
-        parser.add_argument('category_name', type = str)
-        args = parser.parse_args()
+        category_name = request.data['category_name']
+        args = {'category_name':category_name}
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('category_name', type = str)
+        # args = parser.parse_args()
         if value_is_empty(args):
             return {'error': 'all fields must be filled'}, 422
         category_name = args['category_name']
@@ -72,7 +76,7 @@ class editcategory(Resource):
             return ({'message':'category doesnot exist'}), 404
         new_category = RecipeCategory.query.filter_by(category_name=category_name).first()
         if new_category:
-            return ({"message":'category name already used please choose another one'})
+            return ({"message":'category name already used please choose another one'}), 400
         cat.category_name = category_name
         db.session.commit()
         return ({'message':'category edited', 'category name':cat.category_name,
@@ -105,6 +109,10 @@ class search(Resource):
         parser.add_argument('q', type = str)
         parser.add_argument('per_page', default=2)
         parser.add_argument('page', default=1)
+        # q = request.data['q']
+        # per_page = request.data['per_page']
+        # page = request.data['page']
+        # args = {'q':q, 'per_page':per_page, 'page':page}
         args = parser.parse_args()
         q = args['q']
         per_page = args['per_page']
@@ -122,7 +130,7 @@ class search(Resource):
             results = []
             for item in category_search_query.items:
                 recipe_obj = {
-                    "name": item.category_name,
+                    "category_name": item.category_name,
                     "page_number": category_search_query.page,
                     "items_returned": category_search_query.total
                 }
