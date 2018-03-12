@@ -1,5 +1,4 @@
 import unittest
-import app, db
 from api_recipe.auth.views import api
 from api_recipe.categories.views import api_category
 from api_recipe.recipes.views import api_recipe
