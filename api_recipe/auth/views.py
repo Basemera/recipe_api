@@ -57,20 +57,6 @@ class AddUser(Resource):
         email = request.data['email']
         password = request.data['password']
         confirm_password = request.data['confirm_password']
-        # parser = reqparse.RequestParser()
-        # parser.add_argument('username', type=str, required=True,
-        #                     help='username cannot be empty')
-        # print (parser)
-        # parser.add_argument('email', type=str,
-        #                     help='email not provided', required=True)
-        # parser.add_argument('password', type=str, required=True,
-        #                     help='password cannot be empty')
-        # parser.add_argument('firstname', type=str,
-        #                     required=True, help='firstname must be a string')
-        # parser.add_argument('confirm_password', type=str, required=True,
-        #                     help='cannot be empty')
-        # args = parser.parse_args()
-        # print (parser)
         args = {'username':username, 'firstname':firstname, 'email':email, 'password':password, 'confirm_password':confirm_password}
         if values_is_empty(args):
             return {'error': 'all fields must be filled'}, 400
@@ -79,17 +65,23 @@ class AddUser(Resource):
         password = args['password']
         firstname = args['firstname']
         confirm_password = args['confirm_password']
+        if args['email'] == "":
+            return ({'email': 'email not provided'})
         returned = {}
         if not is_email_address_valid(email):
+            # returned.append('invalid email')
             returned['email']= 'invalid email'
         if not is_username_valid(username):
-            returned['username']= 'invalid username cannot begin with numbers'
+            # returned.append('inva/lid username cannot begin with numbers')
+            returned['username']= 'inva/lid username cannot begin with numbers'
         if not is_firstname_valid(firstname):
+            # returned.append('invalid firstname cannot have numbers')
             returned['firstname']= 'invalid firstname cannot have numbers'
         if confirm_password != password:
+            # returned.append('passwords do not match')
             returned['confirm_password']= 'passwords do not match'
-            print (password)
         if len(password) < 8:
+            # returned.append('password must be more than 8 characters')
             returned['password']= 'password must be more than 8 characters'
         if returned:
             return returned, 400
@@ -97,7 +89,6 @@ class AddUser(Resource):
         if person is None: 
             new_user = User(username, email, password, firstname)
             new_user.hash_password(password)
-            print('password')
             try:
                 new_user.save_user()
                 response = {'message': 'Successfully registered'}
@@ -106,7 +97,7 @@ class AddUser(Resource):
                 #     'userid': new_user.userid, 'Username': new_user.username,
                 #     "email": new_user.email, 'firstname':new_user.firstname}, 201
             except exc.IntegrityError:
-                return ({"error":'username already exists please choose another one'})
+                return ({"error":'username already exists please choose another one'}), 400
         else:
             return {"error": "User already exists"}, 400
 

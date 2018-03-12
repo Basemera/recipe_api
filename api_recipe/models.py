@@ -169,7 +169,7 @@ class Recipes(db.Model):
         self.description = description
 
     def __repr__(self):
-        return "<Recipe %r>" % (self.name)
+        return "<Recipe %r>" % (self.recipe_name)
 
     def save_recipe(self):
         """method to save a recipe to the database"""
