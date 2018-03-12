@@ -5,7 +5,7 @@ from api_recipe.categories.views import api_category
 from api_recipe.recipes.views import api_recipe
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from instance.config import app_config
+from instance.config import app, db, app_config
 
 
 conf = app_config['development']
