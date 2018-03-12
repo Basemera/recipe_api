@@ -1,11 +1,11 @@
 import unittest
-from recipe.auth.views import api
-from recipe.categories.views import api_category
-from recipe.recipes.views import api_recipe
+from api_recipe.auth.views import api
+from api_recipe.categories.views import api_category
+from api_recipe.recipes.views import api_recipe
 from recipe import app, db
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from recipe.config import app_config
+from instance.config import app_config
 
 conf = app_config['development']
 #app = create_app("development")
