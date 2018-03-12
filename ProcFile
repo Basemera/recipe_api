@@ -1,0 +1,2 @@
+web: gunicorn app:api_recipe
+release: python manage.py db upgrade
