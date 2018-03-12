@@ -1,7 +1,8 @@
 import re
 from functools import wraps
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, url_for
 from .models import User, Blacklist, Serializer, SignatureExpired, BadSignature, secret_key
+from api_recipe.models import User, RecipeCategory, Recipes
 
 def values_is_empty(args):
     """function to make sure empty spaces cannot be passed in arguments"""
@@ -63,3 +64,54 @@ def login_required(f):
         user = User.query.filter_by(userid = data['userid']).first()
         return f(*args, **kwargs)
     return decorated
+
+def paginate_categories(page, q, userid):
+    if q:
+        pagination =  RecipeCategory.query.filter(RecipeCategory.category_name.ilike('%' + q + '%')).filter_by(
+                user=userid).paginate(page=page, per_page=8, error_out=False)
+    else:
+        pagination = RecipeCategory.query.filter_by(user=userid).paginate(page=page, per_page=8, error_out=False)
+    previous = None
+    if pagination.has_prev:
+        if q:
+            previous = url_for('category.search', q=q, page=page - 1, _external=True)
+        else:
+            previous = url_for('category.addcategory', page=page - 1, _external=True)
+    nex = None
+    if pagination.has_next:
+        if q:
+            nex = url_for('category.search', q=q, page=page + 1, _external=True)
+        else:
+            nex = url_for('category.addcategory', page=page + 1, _external=True)
+    items = pagination.items
+    return items, nex, pagination, previous
+
+
+def response_with_pagination(previous, nex, count):
+    
+    return make_response(jsonify({
+        'status': 'success',
+        'previous': previous,
+        'next': nex,
+        'count': count
+    })), 200
+    
+def paginate_recipes(page, q, userid, category):
+    if q:
+        pagination =  Recipes.query.filter(Recipes.recipe_name.ilike('%' + q + '%')).filter_by(user=userid, category=category).paginate(page=page, per_page=8, error_out=False)
+    else:
+        pagination = Recipes.query.filter_by(user=userid, category=category).paginate(page=page, per_page=4, error_out=False)
+    previous = None
+    if pagination.has_prev:
+        if q:
+            previous = url_for('recipe.search', q=q, page=page - 1, category=category,  _external=True)
+        else:
+            previous = url_for('recipe.getrecipes', page=page - 1, category=category, _external=True)
+    nex = None
+    if pagination.has_next:
+        if q:
+            nex = url_for('recipe.search', q=q, page=page + 1, category=category, _external=True)
+        else:
+            nex = url_for('recipe.getrecipes', page=page + 1, category=category,  _external=True)
+    items = pagination.items
+    return items, nex, pagination, previous
