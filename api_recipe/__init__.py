@@ -21,9 +21,9 @@ api.init_app(app)
 db.init_app(app)
 
 from .auth import autho
-# from .categories import category
+from .categories import category
 # from .recipes import recipe
 
 app.register_blueprint(autho)
-# app.register_blueprint(category)
+app.register_blueprint(category)
 # app.register_blueprint(recipe)
