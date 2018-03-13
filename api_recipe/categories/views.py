@@ -3,7 +3,6 @@ from flask_restful import reqparse, Resource, Api, marshal_with, fields
 from api_recipe import db
 from api_recipe.models import User, RecipeCategory
 from api_recipe.helpers import value_is_empty, login_required, is_category_name_valid, response_with_pagination, paginate_categories
-from . import category
 
 # api_category = Api(category)
 resource_fields = {'category_name':fields.String, 'category_id':fields.String}
