@@ -47,7 +47,7 @@ app_config = {
 db = SQLAlchemy()
 api = Api()
 
-config_name = 'development'
+config_name = os.environ.get('APP_SETTINGS')
 def create_app(config_name):
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
@@ -56,7 +56,4 @@ def create_app(config_name):
     db.app = app
     db.init_app(app)
     api.init_app(app)
-    app.register_blueprint(autho)
-    app.register_blueprint(category)
-    app.register_blueprint(recipe)
     return app
