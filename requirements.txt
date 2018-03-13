@@ -10,12 +10,6 @@ colorama==0.3.9
 coverage==4.4.2
 cssselect==1.0.3
 cssutils==1.0.2
-dj-database-url==0.3.0
-Django==1.11
-django-appconf==1.0.1
-django-compressor==2.1
-django-ses-backend==0.1.1
-djmail==0.11.0
 flasgger==0.8.0
 Flask==0.12.2
 Flask-API==1.0
