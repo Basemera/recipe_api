@@ -3,12 +3,11 @@ from flask import request, jsonify, g, make_response
 from sqlalchemy import exc
 from flask_restful import reqparse, Resource, Api
 from flask_httpauth import HTTPBasicAuth
-from api_recipe import create_app
 from api_recipe.helpers import values_is_empty, login_required
 from api_recipe.models import User, Blacklist, secret_key, auth
-from . import autho
+# from . import autho
 
-api = Api(autho)
+# api = Api(autho)
 def is_email_address_valid(email):
     """Validate the email."""
     if not re.match("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", email):
@@ -144,7 +143,7 @@ class Home(Resource):
         return ({'message': 'API working'})
 
 
-api.add_resource(AddUser, '/register')  # , endpoint = "add_user"
-api.add_resource(Login, '/login')
-api.add_resource(Logout, '/logout')
-api.add_resource(Home, '/')
+# api.add_resource(AddUser, '/register')  # , endpoint = "add_user"
+# api.add_resource(Login, '/login')
+# api.add_resource(Logout, '/logout')
+# api.add_resource(Home, '/')

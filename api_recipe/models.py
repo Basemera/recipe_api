@@ -1,10 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
-from . import db
 from flask import abort, g, jsonify
 from flask_httpauth import HTTPBasicAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from passlib.apps import custom_app_context as pwd_context
+
+from api_recipe import db
 
 auth = HTTPBasicAuth(scheme='Token')
 secret_key = 'xcEN1Sbcp39XKraZVytFEzDJdKVDZZRg'

@@ -1,11 +1,11 @@
 import os
-from flask_api import FlaskAPI
+# from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
-from flask_restful import Resource, Api
-from api_recipe.auth import autho
-from api_recipe.categories import category
-from api_recipe.recipes import recipe
+# from flask_restful import Resource, Api
+# from api_recipe.auth import autho
+# from api_recipe.categories import category
+# from api_recipe.recipes import recipe
 
 class Config(object):
     """Parent configuration class."""
@@ -44,16 +44,16 @@ app_config = {
     'production': ProductionConfig,
 }
 
-db = SQLAlchemy()
-api = Api()
+# db = SQLAlchemy()
+# api = Api()
 
-config_name = os.environ.get('APP_SETTINGS')
-def create_app(config_name):
-    app = FlaskAPI(__name__, instance_relative_config=True)
-    app.config.from_object(app_config[config_name])
-    app.config.from_pyfile('config.py')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.app = app
-    db.init_app(app)
-    api.init_app(app)
-    return app
+# config_name = os.environ.get('APP_SETTINGS')
+# def create_app(config_name):
+#     app = FlaskAPI(__name__, instance_relative_config=True)
+#     app.config.from_object(app_config[config_name])
+#     app.config.from_pyfile('config.py')
+#     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#     db.app = app
+#     db.init_app(app)
+#     api.init_app(app)
+#     return app
