@@ -1,1 +1,1 @@
-web: gunicorn --workers=1 app:api_recipe
+web: gunicorn --workers=1 api_recipe:app
