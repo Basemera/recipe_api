@@ -22,8 +22,8 @@ db.init_app(app)
 
 from .auth import autho
 from .categories import category
-# from .recipes import recipe
+from .recipes import recipe
 
 app.register_blueprint(autho)
 app.register_blueprint(category)
-# app.register_blueprint(recipe)
+app.register_blueprint(recipe)
