@@ -139,7 +139,12 @@ class Logout(Resource):
         blacklist.save_token()
         return ({'message':'logged out'}), 200
 
+class Home(Resource):
+    def get(self):
+        return ({'message': 'API working'})
+
 
 api.add_resource(AddUser, '/register')  # , endpoint = "add_user"
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
+api.add_resource(Home, '/')
