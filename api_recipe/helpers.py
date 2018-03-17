@@ -100,7 +100,7 @@ def paginate_recipes(page, q, userid, category):
     if q:
         pagination =  Recipes.query.filter(Recipes.recipe_name.ilike('%' + q + '%')).filter_by(user=userid, category=category).paginate(page=page, per_page=8, error_out=False)
     else:
-        pagination = Recipes.query.filter_by(user=userid, category=category).paginate(page=page, per_page=4, error_out=False)
+        pagination = Recipes.query.filter_by(user=userid, category=category).paginate(page=page, per_page=6, error_out=False)
     previous = None
     if pagination.has_prev:
         if q:

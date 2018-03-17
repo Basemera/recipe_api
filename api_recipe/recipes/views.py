@@ -60,7 +60,7 @@ class Addrecipe(Resource):
                 new_recipe = Recipes(recipe_name, description, user, category)
                 new_recipe.save_recipe()
                 response = {'message': 'recipe successfully added',
-                                    "category_id":new_recipe.category, 'recipe name':new_recipe.recipe_name}
+                                    "category_id":new_recipe.category, 'recipe name':new_recipe.recipe_name, 'description':new_recipe.description}
                 return make_response(jsonify(response), 201)
             else:
                 return ({"message": "Recipe already exists"}), 409
@@ -95,6 +95,7 @@ class getrecipes(Resource):
             result1 = {
             'recipe_name':item.recipe_name,
             'recipe_id':item.recipe_id,
+            'description':item.description,
             'category':item.category,
             'next':nex,
             'count':pagination.total,
