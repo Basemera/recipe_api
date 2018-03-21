@@ -142,8 +142,8 @@ class editrecipe(Resource):
             if not category:
                 return ({"message":"category doesnot exist"}), 404
             recipe2 = Recipes.query.filter_by(
-                recipe_name = recipe_name).first()        
-            if recipe2 is None:
+                recipe_name = recipe_name, recipe_id = recipe_id).first()        
+            if recipe2:
                 recipes.recipe_name = recipe_name
                 recipes.description = description
                 db.session.commit()
