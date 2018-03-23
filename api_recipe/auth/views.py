@@ -71,8 +71,8 @@ class AddUser(Resource):
             # returned.append('invalid email')
             returned['email']= 'invalid email'
         if not is_username_valid(username):
-            # returned.append('inva/lid username cannot begin with numbers')
-            returned['username']= 'inva/lid username cannot begin with numbers'
+            # returned.append('invalid username cannot begin with numbers')
+            returned['username']= 'invalid username cannot begin with numbers'
         if not is_firstname_valid(firstname):
             # returned.append('invalid firstname cannot have numbers')
             returned['firstname']= 'invalid firstname cannot have numbers'
@@ -83,7 +83,9 @@ class AddUser(Resource):
             # returned.append('password must be more than 8 characters')
             returned['password']= 'password must be more than 8 characters'
         if returned:
-            return returned, 400
+            response = {"error":returned}
+            return make_response(jsonify(response), 400)
+            # return returned, 400
         person = User.query.filter_by(username=username, email=email).first()
         if person is None: 
             new_user = User(username, email, password, firstname)
