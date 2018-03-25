@@ -152,8 +152,8 @@ class Recipes(db.Model):
     __tablename__ = 'recipes'
     recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_name = db.Column('name', db.String(250), nullable=False, index=True)
-    description = db.Column('description', db.String(
-        250), nullable=False, index=True)
+    description = db.Column('description', db.Text(
+        10,000), nullable=False, index=True)
     datecreated = db.Column(db.DateTime, default=db.func.current_timestamp())
     datemodified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
