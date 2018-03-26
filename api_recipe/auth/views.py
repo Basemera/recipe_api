@@ -82,10 +82,6 @@ class AddUser(Resource):
         if len(password) < 8:
             # returned.append('password must be more than 8 characters')
             returned['password']= 'password must be more than 8 characters'
-        if returned:
-            response = {"error":returned}
-            return make_response(jsonify(response), 400)
-            # return returned, 400
         person = User.query.filter_by(username=username, email=email).first()
         if person is None: 
             new_user = User(username, email, password, firstname)
@@ -98,9 +94,17 @@ class AddUser(Resource):
                 #     'userid': new_user.userid, 'Username': new_user.username,
                 #     "email": new_user.email, 'firstname':new_user.firstname}, 201
             except exc.IntegrityError:
-                return ({"error":'username already exists please choose another one'}), 400
+                returned['username_exists']= 'username already exists please choose another one'
+                # return ({"error":'username already exists please choose another one'}), 400
         else:
-            return {"error": "User already exists"}, 400
+            returned['user_exists']= 'User already exists'
+            # return {"error": "User already exists"}, 400
+        if returned:
+            response = {"error":returned}
+            return make_response(jsonify(response), 400)
+            # return returned, 400
+        
+        
 
 class Login(Resource):
     """A resource that will allow users to login"""
